@@ -24,6 +24,6 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS +=(
-  'debug_toolbar'
-)
+#INSTALLED_APPS +=(
+ # 'debug_toolbar'
+#)
