@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -25,10 +24,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'apps.users',
-    'rest_auth', 
-     
+
+    'rest_framework',
+    'rest_auth',
+    'rest_auth.registration',
+    
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+
+
+
+
 ]
 
 SITE_ID = 1
@@ -64,17 +72,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mccc.wsgi.application'
 
 REST_FRAMEWORK = {
-        'DEFAULT_PERMISSION_CLASSES':(
-            'rest_framework.permissions.IsAuthenticated',
-        ), 
-        'DEFAULT_FILTER_BACKENDS': (), 
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        )
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    )
 }
 
-
-#Database settins are different according to the environment dev or prod
+# Database settins are different according to the environment dev or prod
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -94,6 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -108,9 +116,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-from .auth_settings import * 
+from .auth_settings import *
