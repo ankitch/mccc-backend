@@ -27,16 +27,13 @@ INSTALLED_APPS = [
     'apps.users',
 
     'rest_framework',
+    'corsheaders',
     'rest_auth',
     'rest_auth.registration',
-    
+
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-
-
-
-
 ]
 
 SITE_ID = 1
@@ -44,6 +41,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -81,6 +79,10 @@ REST_FRAMEWORK = {
     )
 }
 
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8000',
+    'localhost:8080',
+)
 # Database settins are different according to the environment dev or prod
 
 # Password validation
