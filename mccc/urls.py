@@ -15,10 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from apps.tanks import api as tank_api
 
+router = DefaultRouter()
+
+
+router.register('customers',tank_api.CustomerViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('v1/',include(router.urls)),
     path('v1/rest-auth/', include('rest_auth.urls')),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls'))
+
 ]
