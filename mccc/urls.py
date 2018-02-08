@@ -22,6 +22,7 @@ router = DefaultRouter()
 
 
 router.register('customers',tank_api.CustomerViewSet)
+router.register('lists',tank_api.ListViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
