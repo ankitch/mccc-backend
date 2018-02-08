@@ -5,10 +5,16 @@ from rest_framework import serializers
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    # list_detail = serializers.SerializerMethodField()
+    #
+    # def get_list_detail(self,obj):
+    #     list = obj.List
+    #     return ListSerializer(list).data
+
     class Meta:
         model = Customer
+        # fields = ('id','full_name','email','phone','created_at','updated_at','list_detail')
         fields = '__all__'
-
 
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
