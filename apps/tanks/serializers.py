@@ -1,20 +1,14 @@
 from django.core.paginator import Paginator
 
-from .models import Customer, List
+from .models import Customer, List, Campaign
 from rest_framework import serializers
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    # list_detail = serializers.SerializerMethodField()
-    #
-    # def get_list_detail(self,obj):
-    #     list = obj.List
-    #     return ListSerializer(list).data
-
     class Meta:
         model = Customer
-        # fields = ('id','full_name','email','phone','created_at','updated_at','list_detail')
-        fields = '__all__'
+        fields = ('id', 'full_name','email', 'phone', 'created_at', 'updated_at' )
+
 
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,4 +37,27 @@ class ListDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = List
-        fields = ('id','name', 'customer')
+        fields = ('id', 'name', 'customer')
+
+
+class CampaignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = ('id', 'name', 'list')
+
+
+class CampaignDetailSerializer(serializers.ModelSerializer):
+    customers = serializers.SerializerMethodField()
+
+    def get_customers(self, obj):
+        lst = []
+        for customer in obj.list.coustomers.all():
+            try:
+                lst.append(customer.phone[0])
+            except IndexError:
+                pass
+        return {'+977': lst}
+
+    class Meta:
+        model = Campaign
+        fields = ('id', 'name', 'customers')

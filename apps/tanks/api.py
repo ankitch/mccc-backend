@@ -1,6 +1,6 @@
-from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer
+from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer
 from rest_framework import viewsets
-from .models import Customer, List
+from .models import Customer, List, Campaign
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -17,3 +17,8 @@ class ListViewSet(viewsets.ModelViewSet):
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all().order_by('-id')
     serializer_class = CustomerSerializer
+
+
+class CampaignViewSet(viewsets.ModelViewSet):
+    queryset = Campaign.objects.all().order_by('-id')
+    serializer_class = CampaignSerializer

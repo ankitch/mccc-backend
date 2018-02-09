@@ -35,3 +35,13 @@ class CustomerList(models.Model):
 
     class Meta:
         auto_created = True
+
+
+class Campaign(models.Model):
+    name = models.CharField(max_length=255)
+    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

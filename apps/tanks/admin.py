@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, List, CustomerList
+from .models import Customer, List, CustomerList, Campaign
 
 
 # Register your models here.
@@ -10,3 +10,4 @@ class CustomerAdmin(admin.ModelAdmin):
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(List)
 admin.site.register(CustomerList)
+admin.site.register(Campaign)
