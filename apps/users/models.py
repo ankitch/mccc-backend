@@ -58,3 +58,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.full_name
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=254)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Companies'
