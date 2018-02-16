@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url, include
 from django.contrib import admin
-from django.urls import path, include
+# from django.urls import include
 from rest_framework.routers import DefaultRouter
 from apps.tanks import api as tank_api
 
@@ -26,9 +27,9 @@ router.register('lists',tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('v1/',include(router.urls)),
-    path('v1/rest-auth/', include('rest_auth.urls')),
-    path('v1/rest-auth/registration/', include('rest_auth.registration.urls'))
+    url(r'^admin/', admin.site.urls),
+    url(r'^v1/',include(router.urls)),
+    url(r'^v1/rest-auth/', include('rest_auth.urls')),
+    url(r'^v1/rest-auth/registration/', include('rest_auth.registration.urls'))
 
 ]

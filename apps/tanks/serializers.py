@@ -1,19 +1,24 @@
+import ipdb
 from django.core.paginator import Paginator
+from rest_framework import serializers
+from rest_framework.response import Response
 
 from .models import Customer, List, Campaign
-from rest_framework import serializers
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    # lists = serializers.RelatedField(many=True)
+
     class Meta:
         model = Customer
-        fields = ('id', 'full_name','email', 'phone', 'created_at', 'updated_at' )
+        fields = ('id', 'full_name', 'email', 'phone', 'created_at', 'updated_at', 'lists')
+        depth = 1
 
 
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
-        fields = '__all__'
+        fields = ('id', 'name', 'created_at', 'updated_at')
 
 
 class ListDetailSerializer(serializers.ModelSerializer):
@@ -51,7 +56,7 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
 
     def get_customers(self, obj):
         lst = []
-        for customer in obj.list.coustomers.all():
+        for customer in obj.list.customers.all():
             try:
                 lst.append(customer.phone[0])
             except IndexError:

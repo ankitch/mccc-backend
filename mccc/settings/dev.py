@@ -1,5 +1,6 @@
-import os 
-from .base import BASE_DIR, INSTALLED_APPS, MIDDLEWARE, TEMPLATES 
+import os
+
+from .base import BASE_DIR
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -24,6 +25,6 @@ DATABASES = {
     }
 }
 
-#INSTALLED_APPS +=(
- # 'debug_toolbar'
-#)
+# INSTALLED_APPS +=(
+# 'debug_toolbar'
+# )

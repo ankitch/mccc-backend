@@ -1,11 +1,9 @@
 from django.db import models
 
-from apps.users.models import Company
 
 
 class List(models.Model):
     name = models.CharField(max_length=255)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='lists')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -19,7 +17,7 @@ class Customer(models.Model):
     full_name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, null=True)
-    lists = models.ManyToManyField(List, related_name='customer')
+    lists = models.ManyToManyField(List, related_name='customers', through='ListCustomer')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -35,9 +33,9 @@ class ListCustomer(models.Model):
 
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
-
-    # class Meta:
-    #     auto_created = True
+    #
+    class Meta:
+        auto_created = True
 
 
 class Campaign(models.Model):
@@ -51,4 +49,3 @@ class Campaign(models.Model):
 
     class Meta:
         auto_created = True
-
