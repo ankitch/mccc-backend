@@ -41,11 +41,12 @@ class ListCustomer(models.Model):
 class Campaign(models.Model):
     name = models.CharField(max_length=255)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
+    emails = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
-
+    #
     class Meta:
         auto_created = True
