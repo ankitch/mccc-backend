@@ -66,3 +66,10 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campaign
         fields = ('id', 'name', 'customers')
+
+
+class CampaignEmailSerializer(serializers.ModelSerializer):
+    email = serializers.SerializerMethodField()
+
+    def get_email(self, obj):
+        print(obj)

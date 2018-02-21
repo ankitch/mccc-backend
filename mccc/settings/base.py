@@ -85,6 +85,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = (
     'localhost:8000',
     'localhost:8080',
+    'http://localhost:8080',
 )
 # Database settins are different according to the environment dev or prod
 
