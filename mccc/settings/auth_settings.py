@@ -3,8 +3,8 @@ import datetime
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKEND = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+     'django.contrib.auth.backends.ModelBackend',
+     'allauth.account.auth_backends.AuthenticationBackend',
 )
 REST_USE_JWT = True
 
