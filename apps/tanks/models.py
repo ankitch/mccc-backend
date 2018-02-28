@@ -40,6 +40,7 @@ class ListCustomer(models.Model):
 
 class Campaign(models.Model):
     name = models.CharField(max_length=255)
+    details = models.TextField()
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
     emails = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
