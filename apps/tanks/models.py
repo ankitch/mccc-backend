@@ -1,6 +1,5 @@
 from django.db import models
-
-
+from django.contrib.postgres.fields import JSONField
 
 class List(models.Model):
     name = models.CharField(max_length=255)
@@ -17,6 +16,7 @@ class Customer(models.Model):
     full_name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, null=True)
+    add_fields = JSONField()
     lists = models.ManyToManyField(List, related_name='customers', through='ListCustomer')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -48,6 +48,6 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.name
-    #
+    # #
     class Meta:
         auto_created = True
