@@ -10,11 +10,12 @@ customer.settings(
 
 @customer.doc_type
 class CustomerDocument(DocType):
-    full_name = fields.StringField()
+    add_fields = fields.NestedField()
     class Meta:
         model = Customer
 
         fields = [
-            # 'full_name',
-            # 'add_fields',
+            'full_name',
+            'email',
+            'phone',
         ]
