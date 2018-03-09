@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db import models
+
 
 class List(models.Model):
     name = models.CharField(max_length=255)
@@ -23,6 +24,34 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.full_name
+
+    #
+    # add_fields
+    # ": {
+    # "age": "25",
+    # "address": {
+    #     "city": "Chirtwan",
+    #     "country": "Nepal"
+    # }}
+
+    def jsonleaves(self):
+        mainjson = self.add_fields
+        text = []
+
+        while True:
+            json = mainjson
+
+            for key, value in mainjson.items():
+                if isinstance(value, dict):
+                    mainjson = value
+                else:
+                    text.append(value)
+                    print(value)
+
+            if json == mainjson:
+                break
+
+        # return ''.join(text)
 
 
 class ListCustomer(models.Model):
@@ -51,3 +80,31 @@ class Campaign(models.Model):
     # #
     # class Meta:
     #     auto_created = True
+
+
+class Leaf(object):
+    def __init__(self, dictionary):
+        self.text = ''
+        self.rec(dictionary)
+        print(self.text)
+
+    def rec(self, dic):
+        for key, value in dic.items():
+            if isinstance(value, dict):
+                self.rec(value)
+            elif isinstance(value, list):
+                self.recl(value)
+            else:
+                print(value)
+                self.text += str(value) + ' '
+
+    def recl(self, lis):
+        for item in lis:
+            if isinstance(item, list):
+                self.recl(item)
+            elif isinstance(item, dict):
+                self.rec(item)
+            else:
+                print(item)
+                self.text += str(item) + ' '
+

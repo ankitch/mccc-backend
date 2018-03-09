@@ -8,9 +8,13 @@ customer.settings(
     number_of_replicas=0
 )
 
+
 @customer.doc_type
 class CustomerDocument(DocType):
-    add_fields = fields.NestedField()
+    add_fields = fields.NestedField(properties={
+        "age": fields.StringField()
+    })
+
     class Meta:
         model = Customer
 
@@ -19,3 +23,4 @@ class CustomerDocument(DocType):
             'email',
             'phone',
         ]
+

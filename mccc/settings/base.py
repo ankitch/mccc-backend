@@ -24,8 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'haystack',
-    'django_elasticsearch_dsl',
+    'haystack',
+    # 'django_elasticsearch_dsl',
     'apps.users',
     'apps.tanks',
 
@@ -128,20 +128,20 @@ USE_L10N = True
 
 USE_TZ = True
 
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'localhost:9200'
-    },
-}
-
-# haystack settings for elastic search
-# HAYSTACK_CONNECTIONS = {
+# ELASTICSEARCH_DSL={
 #     'default': {
-#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-#         'URL': 'http://127.0.0.1:9200/',
-#         'INDEX_NAME': 'elasticman',
+#         'hosts': 'localhost:9200'
 #     },
 # }
+
+#haystack settings for elastic search
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'elasticman',
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

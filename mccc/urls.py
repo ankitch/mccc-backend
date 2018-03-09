@@ -32,5 +32,5 @@ urlpatterns = [
     path('v1/rest-auth/', include('rest_auth.urls')),
     path('v1/campaigns/email/<int:pk>/', grape_mail_load),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
-    # path('search/', include('haystack.urls')),
+    path('search/', include('haystack.urls')),
 ]
