@@ -26,6 +26,7 @@ router = DefaultRouter()
 router.register('customers',tank_api.CustomerViewSet)
 router.register('lists',tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
+router.register('settings', tank_api.SettingsViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('v1/',include(router.urls)),

@@ -1,7 +1,7 @@
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
-    CampaignEmailSerializer
+    CampaignEmailSerializer, SettingsSerializer
 from rest_framework import viewsets
-from .models import Customer, List, Campaign
+from .models import Customer, List, Campaign, Settings
 
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -27,6 +27,11 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class CampaignViewSet(viewsets.ModelViewSet):
     queryset = Campaign.objects.all().order_by('-id')
     serializer_class = CampaignSerializer
+
+
+class SettingsViewSet(viewsets.ModelViewSet):
+    queryset = Settings.objects.all().order_by('-id')
+    serializer_class = SettingsSerializer
 
 
 @api_view(['GET'])
