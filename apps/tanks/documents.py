@@ -11,9 +11,7 @@ customer.settings(
 
 @customer.doc_type
 class CustomerDocument(DocType):
-    add_fields = fields.NestedField(properties={
-        "age": fields.StringField()
-    })
+    add_fields = fields.objectfield()
 
     class Meta:
         model = Customer

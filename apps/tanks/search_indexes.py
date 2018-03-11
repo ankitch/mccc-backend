@@ -10,7 +10,7 @@ class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare(self, obj):
        data = super().prepare(obj)
-       data['add_fields'] = obj.add_fields
+       data['add_fields'] = obj.add_fields.age
        return data
 
     def get_model(self):

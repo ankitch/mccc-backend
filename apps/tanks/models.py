@@ -35,22 +35,9 @@ class Customer(models.Model):
     # }}
 
     def jsonleaves(self):
-        mainjson = self.add_fields
-        text = []
-
-        while True:
-            json = mainjson
-
-            for key, value in mainjson.items():
-                if isinstance(value, dict):
-                    mainjson = value
-                else:
-                    text.append(value)
-                    print(value)
-
-            if json == mainjson:
-                break
-
+       leaves = Leaf(self.add_fields)
+       # print(leaves.text)
+       return leaves.text
         # return ''.join(text)
 
 
@@ -86,7 +73,7 @@ class Leaf(object):
     def __init__(self, dictionary):
         self.text = ''
         self.rec(dictionary)
-        print(self.text)
+        # print(self.text)
 
     def rec(self, dic):
         for key, value in dic.items():
@@ -95,8 +82,8 @@ class Leaf(object):
             elif isinstance(value, list):
                 self.recl(value)
             else:
-                print(value)
-                self.text += str(value) + ' '
+                # print(value)
+                self.text += str(value) + ','
 
     def recl(self, lis):
         for item in lis:
@@ -105,6 +92,5 @@ class Leaf(object):
             elif isinstance(item, dict):
                 self.rec(item)
             else:
-                print(item)
-                self.text += str(item) + ' '
-
+                # print(item)
+                self.text += str(item) + ','
