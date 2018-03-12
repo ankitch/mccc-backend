@@ -74,14 +74,15 @@ class Leaf(object):
     def __init__(self, dictionary):
         self.text = ''
         self.rec(dictionary)
-        # print(self.text)
+        # print.
+        # (self.text)
 
     def rec(self, dic):
         for key, value in dic.items():
             if isinstance(value, dict):
                 self.rec(value)
-            # elif isinstance(value, list):
-            #     self.recl(value)
+            elif isinstance(value, list):
+                self.recl(value)
             else:
                 # print(value)
                 self.text += str(value) + ','
@@ -89,15 +90,15 @@ class Leaf(object):
                 # print(key:value)
                 # return key, value
 
-    # def recl(self, lis):
-    #     for item in lis:
-    #         if isinstance(item, list):
-    #             self.recl(item)
-    #         elif isinstance(item, dict):
-    #             self.rec(item)
-    #         else:
-    #             # print(item)
-    #             self.text += str(item) + ','
+    def recl(self, lis):
+        for item in lis:
+            if isinstance(item, list):
+                self.recl(item)
+            elif isinstance(item, dict):
+                self.rec(item)
+            else:
+                # print(item)
+                self.text += str(item) + ','
 
 
 class Settings(models.Model):

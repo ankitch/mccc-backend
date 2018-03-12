@@ -19,6 +19,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from apps.tanks import api as tank_api
 from apps.tanks.api import grape_mail_load
+from apps.tanks.haystack_api import CustomerSearchView
 
 router = DefaultRouter()
 
@@ -27,6 +28,7 @@ router.register('customers',tank_api.CustomerViewSet)
 router.register('lists',tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('settings', tank_api.SettingsViewSet)
+router.register('customer/search', CustomerSearchView, base_name='customer-search')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('v1/',include(router.urls)),
