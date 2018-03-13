@@ -1,16 +1,17 @@
-from drf_haystack.serializers import HaystackSerializer
+from drf_haystack.serializers import HaystackSerializer, HaystackSerializerMixin
 from drf_haystack.viewsets import HaystackViewSet
 
 from apps.tanks.models import Customer
 from apps.tanks.search_indexes import CustomerIndex
+from apps.tanks.serializers import CustomerSerializer
 
 
-class CustomerSerializer(HaystackSerializer):
+class CustomerSearchSerializer(HaystackSerializer):
     class Meta:
         index_classes = [CustomerIndex]
-        fields = ['full_name', 'email', 'phone', 'age']
+        fields = ('full_name','age', 'email', 'phone')
 
 
 class CustomerSearchView(HaystackViewSet):
-    index_models = [Customer]
-    serializer_class = CustomerSerializer
+    # index_models = [CustomerIndex]
+    serializer_class = CustomerSearchSerializer

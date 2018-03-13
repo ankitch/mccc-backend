@@ -143,6 +143,8 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# for realtime indexing
+#index on save
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # Static files (CSS, JavaScript, Images)
