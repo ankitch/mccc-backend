@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
@@ -37,3 +38,8 @@ urlpatterns = [
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('search/', include('haystack.urls')),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns = [path('debug', include(debug_toolbar.urls)), ] + urlpatterns
