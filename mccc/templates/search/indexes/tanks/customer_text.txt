@@ -1,0 +1,4 @@
+{{object.full_name}}
+{{object.email}}
+{{object.phone}}
+{{object.jsonleaves}}
