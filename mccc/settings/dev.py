@@ -6,11 +6,10 @@ from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'nxg=f!y6$z6cti-j5mgjbc#92pb6%(e--9+b)1vvb_-(wyh-dd'
-1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 INTERNAL_IPS = ['127.0.0.1']
 
 STATICFILES_DIRS = ()
