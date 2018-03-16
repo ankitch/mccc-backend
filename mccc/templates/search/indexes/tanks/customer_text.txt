@@ -2,3 +2,6 @@
 {{object.email}}
 {{object.phone}}
 {{object.jsonleaves}}
+{% for author in object.lists.all %}
+    {{lists.name}}
+{% endfor %}

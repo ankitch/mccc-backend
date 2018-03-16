@@ -18,7 +18,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
-        fields = ('id', 'name', 'created_at', 'updated_at')
+        fields = '__all__'
 
 
 class ListDetailSerializer(serializers.ModelSerializer):
@@ -46,9 +46,15 @@ class ListDetailSerializer(serializers.ModelSerializer):
 
 
 class CampaignSerializer(serializers.ModelSerializer):
+    # list = ListSerializer()
+    list_name = serializers.SerializerMethodField('get_lists_name')
+
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'details', 'list', 'emails', 'created_at', 'updated_at')
+        fields = ('id', 'name', 'details','list', 'list_name','emails', 'created_at', 'updated_at')
+
+    def get_lists_name(self, obj):
+        return obj.list.name
 
 
 class CampaignDetailSerializer(serializers.ModelSerializer):
