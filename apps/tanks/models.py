@@ -25,16 +25,6 @@ class Customer(models.Model):
     def __str__(self):
         return self.full_name
 
-    #
-    # add_fields
-    # ": {
-    # "age": "25",
-    # "sex": "male"
-    # "address": {
-    #     "city": "Chirtwan",
-    #     "country": "Nepal"
-    # }}
-
     def jsonleaves(self):
         leaves = Leaf(self.add_fields)
         # print(leaves.text)
@@ -51,8 +41,8 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
     #
-    # class Meta:
-    #     auto_created = True
+    class Meta:
+        auto_created = True
 
 
 class Campaign(models.Model):
@@ -66,16 +56,14 @@ class Campaign(models.Model):
     def __str__(self):
         return self.name
     # #
-    # class Meta:
-    #     auto_created = True
+    class Meta:
+        auto_created = True
 
 
 class Leaf(object):
     def __init__(self, dictionary):
         self.text = ''
         self.rec(dictionary)
-        # print.
-        # (self.text)
 
     def rec(self, dic):
         for key, value in dic.items():
