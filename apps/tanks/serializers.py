@@ -62,16 +62,20 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
 
     def get_customers(self, obj):
         lst = []
+        # import ipdb
+        # ipdb.set_trace()
         for customer in obj.list.customers.all():
             try:
-                lst.append(customer.phone[0])
+                # import ipdb
+                # ipdb.set_trace
+                lst.append(customer.phone)
             except IndexError:
                 pass
         return {'+977': lst}
 
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'customers')
+        fields = ('id', 'name', 'customers', 'template')
 
 
 class CampaignEmailSerializer(serializers.ModelSerializer):

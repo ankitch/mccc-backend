@@ -1,11 +1,11 @@
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
-    CampaignEmailSerializer, SettingsSerializer
+    CampaignEmailSerializer, SettingsSerializer, CampaignDetailSerializer
 from rest_framework import viewsets
 from .models import Customer, List, Campaign, Settings
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, detail_route
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -28,6 +28,18 @@ class CampaignViewSet(viewsets.ModelViewSet):
     queryset = Campaign.objects.all().order_by('-id')
     serializer_class = CampaignSerializer
 
+    # todo change to post
+    @detail_route(methods=['get'])
+    def trigger(self, request, pk=None, format=None):
+        campaign = get_object_or_404(Campaign, pk=pk)
+        campaign.trigger()
+        return Response({})
+
+    @detail_route(methods=['get'])
+    def details(self, request, pk=None, format=None):
+        campaign = get_object_or_404(Campaign.objects.prefetch_related('list__customers'), pk=pk)
+        serializer = CampaignDetailSerializer(campaign)
+        return Response(serializer.data)
 
 class SettingsViewSet(viewsets.ModelViewSet):
     queryset = Settings.objects.all().order_by('-id')
