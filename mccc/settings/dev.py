@@ -9,7 +9,7 @@ SECRET_KEY = 'nxg=f!y6$z6cti-j5mgjbc#92pb6%(e--9+b)1vvb_-(wyh-dd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','192.168.0.122']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.0.122', '192.168.0.103']
 INTERNAL_IPS = ['127.0.0.1']
 
 STATICFILES_DIRS = ()
