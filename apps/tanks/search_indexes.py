@@ -23,14 +23,7 @@ class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_lists(self, obj):
         return [list.name for list in obj.lists.all()]
 
-    # query = {'age': '18', 'sex': 'female'}
-    # smth = Customer.objects.all().values_list('add_fields')
-    # print(list(smth))
-    # for item in list(smth):
-    #     print(item)
-    # #     print(type(item))
-    # add_fields = indexes.CharField(model_attr='add_fields')
-
+    # adding data for full text search
     # def prepare(self, obj):
     #     data = super(CustomerIndex, self).prepare(obj)
     #     # print(obj.email)
@@ -41,6 +34,3 @@ class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Customer
-
-    # def do(self, value):
-    #     age = indexes.CharField(de)

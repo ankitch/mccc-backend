@@ -62,12 +62,8 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
 
     def get_customers(self, obj):
         lst = []
-        # import ipdb
-        # ipdb.set_trace()
         for customer in obj.list.customers.all():
             try:
-                # import ipdb
-                # ipdb.set_trace
                 lst.append(customer.phone)
             except IndexError:
                 pass
