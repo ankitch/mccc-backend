@@ -9,7 +9,7 @@ class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
     full_name = indexes.CharField(model_attr='full_name')
     email = indexes.CharField(model_attr='email')
     phone = indexes.CharField(model_attr='phone')
-    fcm_id = indexes.CharField(model_attr='fcm_id')
+    fcm_id = indexes.CharField(model_attr='fcm_id', default=None)
     age = indexes.CharField()
     sex = indexes.CharField()
     lists = indexes.MultiValueField(indexed=True, stored=True)
