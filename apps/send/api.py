@@ -30,7 +30,7 @@ def send_push_notification(title, body, fcm_ids):
     # import ipdb
     # ipdb.set_trace()
     result = push_service.notify_multiple_devices(fcm_ids, title, body)
-    print(result)
+    return Response(result)
 
 
 @api_view(['POST', 'GET'])
@@ -41,30 +41,28 @@ def send_push(request, *args, **kwargs):
         fcm_ids = request.data['fcm_ids']
         # import ipdb
         # ipdb.set_trace()
-        send_push_notification(title, body, fcm_ids)
-
-    else:
-        print(request.data)
-    return Response({'good': 'push'})
+        return send_push_notification(title, body, fcm_ids)
 
 
 def send_sms_fcm(data):
     data_message = {
-        'campaign':data
+        'campaign': data
     }
-    push_service = FCMNotification(api_key="AAAAQvw3CNQ:APA91bHEdh46Gd7q6yJ2L4pjowxLE0Alg5MWQ32id3iV51AEaf5D1HLDGsABTR3Z1mfbFP5g8aQ02EJ1D1Yif2prvabMhndtshZQ03jEDxQQEeuIIJoTeRRrLXrRrLJn5zdrMhnZHp-9")
-    result = push_service.single_device_data_message(registration_id="dHTO1U7CKP4:APA91bGoXJL6DGySqAInuFv8Eu8KNV8vjpSb1PYX-KZQ3XMCKtWYKCitEOQBE0OUmQ3wt-16HRTy4Cn3leYwKh6ZH7LMLoLWJpEASddNJ9rlzHVYm2cPS3PAsdyXqSEqoisbOe1k5GW3",
-                                                     data_message=data_message)
+    push_service = FCMNotification(
+        api_key="AAAAQvw3CNQ:APA91bHEdh46Gd7q6yJ2L4pjowxLE0Alg5MWQ32id3iV51AEaf5D1HLDGsABTR3Z1mfbFP5g8aQ02EJ1D1Yif2prvabMhndtshZQ03jEDxQQEeuIIJoTeRRrLXrRrLJn5zdrMhnZHp-9")
+    result = push_service.single_device_data_message(
+        registration_id="dHTO1U7CKP4:APA91bGoXJL6DGySqAInuFv8Eu8KNV8vjpSb1PYX-KZQ3XMCKtWYKCitEOQBE0OUmQ3wt-16HRTy4Cn3leYwKh6ZH7LMLoLWJpEASddNJ9rlzHVYm2cPS3PAsdyXqSEqoisbOe1k5GW3",
+        data_message=data_message)
 
-    print(result)
+    return Response(result)
+
 
 @api_view(['POST', 'GET'])
 def send_sms(request, *args, **kwargs):
     if request.method == 'POST':
         campaigns = request.data['campaign']
-        send_sms_fcm(campaigns)
+        return send_sms_fcm(campaigns)
 
-    return Response({'good', 'sms'})
     # import ipdb
     # ipdb.set_trace()
     # send_push_notification(title, body, fcm_ids)

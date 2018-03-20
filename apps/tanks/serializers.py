@@ -51,7 +51,7 @@ class CampaignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'details','list', 'list_name','emails', 'created_at', 'updated_at')
+        fields = ('id', 'name', 'details','list', 'list_name','emails', 'created_at', 'updated_at', 'template')
 
     def get_lists_name(self, obj):
         return obj.list.name
