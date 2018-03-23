@@ -8,6 +8,7 @@ from apps.send.api import send_email, send_push, send_sms
 from apps.tanks import api as tank_api
 from apps.tanks.api import grape_mail_load
 from apps.tanks.haystack_api import CustomerSearchView
+from apps.tanks import views as tank_views
 
 router = DefaultRouter()
 
@@ -28,7 +29,8 @@ urlpatterns = [
     path('v1/send/email', send_email),
     path('v1/send/push/', send_push),
     path('v1/send/sms/', send_sms),
-    path('search/', include('haystack.urls')),
+    # path('v1/list/<int:pk>/export/', tank_views.export_customer)
+    path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export-customers'),
 ]
 
 if settings.DEBUG:
