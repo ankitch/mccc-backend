@@ -17,6 +17,7 @@ router.register('customers',tank_api.CustomerViewSet)
 router.register('lists',tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('settings', tank_api.SettingsViewSet)
+router.register('segments', tank_api.SegmentViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
 
 

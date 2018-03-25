@@ -41,9 +41,10 @@ class ListCustomer(models.Model):
 
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
+
     #
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
 
 
 class Campaign(models.Model):
@@ -57,9 +58,10 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.name
-    # #
-        class Meta:
-            auto_created = True
+
+        # #
+        # class Meta:
+        #     auto_created = True
 
 
 class Leaf(object):
@@ -93,3 +95,29 @@ class Leaf(object):
 
 class Settings(models.Model):
     settings = JSONField()
+
+
+class Segments(models.Model):
+    name = models.CharField(max_length=255)
+    query = models.CharField(max_length=255)
+    lists = models.ManyToManyField(List, related_name='lists', through='SegmentList')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class SegmentList(models.Model):
+    list = models.ForeignKey(List, on_delete=models.CASCADE)
+    segments = models.ForeignKey(Segments, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '%s  - %s' % (self.list, self.segments)
+
+        #
+    #
+    # class Meta:
+    #     auto_created = True

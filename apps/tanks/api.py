@@ -1,7 +1,7 @@
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
-    CampaignEmailSerializer, SettingsSerializer, CampaignDetailSerializer
+    CampaignEmailSerializer, SettingsSerializer, CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 from rest_framework import viewsets
-from .models import Customer, List, Campaign, Settings
+from .models import Customer, List, Campaign, Settings, Segments
 
 from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
@@ -41,9 +41,21 @@ class CampaignViewSet(viewsets.ModelViewSet):
         serializer = CampaignDetailSerializer(campaign)
         return Response(serializer.data)
 
+
 class SettingsViewSet(viewsets.ModelViewSet):
     queryset = Settings.objects.all().order_by('-id')
     serializer_class = SettingsSerializer
+
+
+class SegmentViewSet(viewsets.ModelViewSet):
+    queryset = Segments.objects.all().order_by('-id')
+    serializer_class = SegmentSerializer
+    detail_serializer_class = SegmentDetailSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return self.serializer_class
 
 
 @api_view(['GET'])
