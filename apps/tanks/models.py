@@ -100,7 +100,7 @@ class Settings(models.Model):
 class Segments(models.Model):
     name = models.CharField(max_length=255)
     query = models.CharField(max_length=255)
-    lists = models.ManyToManyField(List, related_name='lists', through='SegmentList')
+    lists = models.ManyToManyField(List, related_name='segments', through='SegmentList')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -116,8 +116,3 @@ class SegmentList(models.Model):
 
     def __str__(self):
         return '%s  - %s' % (self.list, self.segments)
-
-        #
-    #
-    # class Meta:
-    #     auto_created = True

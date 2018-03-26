@@ -23,10 +23,27 @@ class ListSerializer(serializers.ModelSerializer):
 
 class ListDetailSerializer(serializers.ModelSerializer):
     customer = serializers.SerializerMethodField()
+    segments = serializers.SerializerMethodField()
+
+    def get_segments(self, obj):
+        # import ipdb
+        # ipdb.set_trace()
+        page_size = 50
+        paginator = Paginator(obj.segments.all(), page_size)
+        object_list = paginator.page(1)
+        serializer = SegmentSerializer(object_list, many=True)
+        count = object_list.paginator.count
+        if page_size > count:
+            page_size = count
+        return {
+            'count': count,
+            'page_size': page_size,
+            'page': object_list.number,
+            'pages': object_list.paginator.num_pages,
+            'results': serializer.data,
+        }
 
     def get_customer(self, obj):
-        import ipdb
-        ipdb.set_trace()
         page_size = 50
         paginator = Paginator(obj.customers.all(), page_size)
         object_list = paginator.page(1)
@@ -44,16 +61,50 @@ class ListDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = List
-        fields = ('id', 'name', 'customer')
+        fields = ('id', 'name', 'customer', 'segments')
+
+
+class SegmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Segments
+        fields = ('id', 'name', 'query','created_at', 'updated_at')
+
+
+class SegmentDetailSerializer(serializers.ModelSerializer):
+    list = serializers.SerializerMethodField()
+
+    def get_list(self, obj):
+        # import ipdb
+        # ipdb.set_trace()
+        page_size = 50
+        paginator = Paginator(obj.lists.all(), page_size)
+        object_list = paginator.page(1)
+        serializer = ListSerializer(object_list, many=True)
+        count = object_list.paginator.count
+        if page_size > count:
+            page_size = count
+        return {
+            'count': count,
+            'page_size': page_size,
+            'page': object_list.number,
+            'pages': object_list.paginator.num_pages,
+            'results': serializer.data,
+        }
+
+    class Meta:
+        model = Segments
+        fields = ('id', 'name', 'query', 'list')
 
 
 class CampaignSerializer(serializers.ModelSerializer):
-    # list = ListSerializer()
-    list_name = serializers.SerializerMethodField('get_lists_name')
+    list = ListSerializer(read_only=True)
+    segment = SegmentSerializer(read_only=True)
+
+    # list_name = serializers.SerializerMethodField('get_lists_name')
 
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'details', 'list', 'list_name', 'emails', 'created_at', 'updated_at', 'template')
+        fields = ('id', 'name', 'details', 'list', 'emails', 'created_at', 'updated_at', 'segment', 'template')
 
     def get_lists_name(self, obj):
         return obj.list.name
@@ -87,33 +138,3 @@ class SettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Settings
         fields = '__all__'
-
-
-class SegmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Segments
-        fields = '__all__'
-
-
-class SegmentDetailSerializer(serializers.ModelSerializer):
-    list = serializers.SerializerMethodField()
-
-    def get_list(self, obj):
-        page_size = 50
-        paginator = Paginator(obj.lists.all(), page_size)
-        object_list = paginator.page(1)
-        serializer = ListSerializer(object_list, many=True)
-        count = object_list.paginator.count
-        if page_size > count:
-            page_size = count
-        return {
-            'count': count,
-            'page_size': page_size,
-            'page': object_list.number,
-            'pages': object_list.paginator.num_pages,
-            'results': serializer.data,
-        }
-
-    class Meta:
-        model = List
-        fields = ('id', 'name', 'list')

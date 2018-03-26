@@ -13,6 +13,11 @@ class ListViewSet(viewsets.ModelViewSet):
     serializer_class = ListSerializer
     detail_serializer_class = ListDetailSerializer
 
+    @detail_route(methods=['get'])
+    def details(self, request, pk=None, format=None):
+        import ipdb
+        ipdb.set_trace()
+
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return self.detail_serializer_class
