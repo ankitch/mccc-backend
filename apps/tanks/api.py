@@ -13,15 +13,27 @@ class ListViewSet(viewsets.ModelViewSet):
     serializer_class = ListSerializer
     detail_serializer_class = ListDetailSerializer
 
-    @detail_route(methods=['get'])
-    def details(self, request, pk=None, format=None):
-        import ipdb
-        ipdb.set_trace()
-
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return self.detail_serializer_class
         return self.serializer_class
+
+    @detail_route(methods=['get'])
+    def segment(self, request, pk=None, format=None):
+
+        segments = []
+        lis = Segments.objects.filter(lists=pk)
+
+        for items in lis:
+            try:
+                segments.append(items.name)
+            except IndexError:
+                pass
+        # return Response({})
+        serializer =SegmentSerializer(lis,many=True).data
+        # import ipdb
+        # ipdb.set_trace()
+        return Response(serializer)
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -45,6 +57,8 @@ class CampaignViewSet(viewsets.ModelViewSet):
         campaign = get_object_or_404(Campaign.objects.prefetch_related('list__customers'), pk=pk)
         serializer = CampaignDetailSerializer(campaign)
         return Response(serializer.data)
+
+    
 
 
 class SettingsViewSet(viewsets.ModelViewSet):
