@@ -26,7 +26,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.full_name
 
-    def jsonleaves(self):
+    def json_leaves(self):
         leaves = Leaf(self.add_fields)
         # print(leaves.text)
         return leaves.text

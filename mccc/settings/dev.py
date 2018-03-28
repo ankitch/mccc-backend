@@ -34,3 +34,7 @@ INSTALLED_APPS += (
 MIDDLEWARE += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+#
+FCM_API_KEY_SEND="AAAAQvw3CNQ:APA91bHEdh46Gd7q6yJ2L4pjowxLE0Alg5MWQ32id3iV51AEaf5D1HLDGsABTR3Z1mfbFP5g8aQ02EJ1D1Yif2prvabMhndtshZQ03jEDxQQEeuIIJoTeRRrLXrRrLJn5zdrMhnZHp-9"
+

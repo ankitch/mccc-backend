@@ -30,7 +30,7 @@ class ListViewSet(viewsets.ModelViewSet):
             except IndexError:
                 pass
         # return Response({})
-        serializer =SegmentSerializer(lis,many=True).data
+        serializer = SegmentSerializer(lis, many=True).data
         # import ipdb
         # ipdb.set_trace()
         return Response(serializer)
@@ -57,8 +57,6 @@ class CampaignViewSet(viewsets.ModelViewSet):
         campaign = get_object_or_404(Campaign.objects.prefetch_related('list__customers'), pk=pk)
         serializer = CampaignDetailSerializer(campaign)
         return Response(serializer.data)
-
-    
 
 
 class SettingsViewSet(viewsets.ModelViewSet):

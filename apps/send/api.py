@@ -1,7 +1,10 @@
+from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.mail import send_mail
+
+from mccc import settings
 
 
 def email_to_ses(emails):
@@ -24,7 +27,8 @@ def send_email(request, *args, **kwargs):
     return Response({'good': 'nice'})
 
 
-def send_push_notification(title, body, fcm_ids):
+def send_push_notification(title, body, fcm_ids, query, lists):
+    perform_search(query, lists)
     push_service = FCMNotification(
         api_key="AAAApd54CKA:APA91bHh60kTOjmJQP8qv8IcQtnkB3-uq-NZtmFGefneT3xlS5dfDEiPUVgjrOKVQdyamgTHn7vIfRvNI6I3vo6nwqW3KntsapmcJIFfJYfrs9a5bYT9VwaRMAVTb6Xzk0Wbm2L5ZEHT")
     # import ipdb
@@ -39,9 +43,11 @@ def send_push(request, *args, **kwargs):
         title = request.data['title']
         body = request.data['body']
         fcm_ids = request.data['fcm_ids']
+        query = request.data['query']
+        lists = request.data['lists']
         # import ipdb
         # ipdb.set_trace()
-        return send_push_notification(title, body, fcm_ids)
+        return send_push_notification(title, body, fcm_ids, query, lists)
 
 
 def send_sms_fcm(data):
@@ -49,7 +55,7 @@ def send_sms_fcm(data):
         'campaign': data
     }
     push_service = FCMNotification(
-        api_key="AAAAQvw3CNQ:APA91bHEdh46Gd7q6yJ2L4pjowxLE0Alg5MWQ32id3iV51AEaf5D1HLDGsABTR3Z1mfbFP5g8aQ02EJ1D1Yif2prvabMhndtshZQ03jEDxQQEeuIIJoTeRRrLXrRrLJn5zdrMhnZHp-9")
+        api_key=settings.FCM_API_KEY_SEND)
     result = push_service.single_device_data_message(
         registration_id="dHTO1U7CKP4:APA91bGoXJL6DGySqAInuFv8Eu8KNV8vjpSb1PYX-KZQ3XMCKtWYKCitEOQBE0OUmQ3wt-16HRTy4Cn3leYwKh6ZH7LMLoLWJpEASddNJ9rlzHVYm2cPS3PAsdyXqSEqoisbOe1k5GW3",
         data_message=data_message)
@@ -66,3 +72,14 @@ def send_sms(request, *args, **kwargs):
     # import ipdb
     # ipdb.set_trace()
     # send_push_notification(title, body, fcm_ids)
+
+
+def perform_search(query, lists):
+    sexs='male'
+    search_query = SearchQuerySet().filter(SQ(lists=lists) & SQ(sex=sexs))
+    print(query)
+    for item in search_query:
+        print(item.email)
+    # print(search_query)
+    import ipdb
+    ipdb.set_trace()
