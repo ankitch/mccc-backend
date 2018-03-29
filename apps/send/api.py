@@ -1,8 +1,8 @@
+from django.core.mail import send_mail
 from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.core.mail import send_mail
 
 from mccc import settings
 
@@ -19,7 +19,15 @@ def email_to_ses(emails):
 @api_view(['POST', 'GET'])
 def send_email(request, *args, **kwargs):
     if request.method == 'POST':
-        emails = request.data['emails']
+        emails = []
+        query = request.data['query']
+        lists = request.data['lists']
+
+        search_results = perform_search(query, lists)
+
+        for items in search_results:
+            emails.append(items.email)
+
         email_to_ses(emails)
     else:
         print(request.data)
@@ -27,12 +35,15 @@ def send_email(request, *args, **kwargs):
     return Response({'good': 'nice'})
 
 
-def send_push_notification(title, body, fcm_ids, query, lists):
-    perform_search(query, lists)
+def send_push_notification(title, body, query, lists):
+    search_results = perform_search(query, lists)
+    fcm_ids = []
+
+    for items in search_results:
+        fcm_ids.append(items.fcm_id)
+
     push_service = FCMNotification(
         api_key="AAAApd54CKA:APA91bHh60kTOjmJQP8qv8IcQtnkB3-uq-NZtmFGefneT3xlS5dfDEiPUVgjrOKVQdyamgTHn7vIfRvNI6I3vo6nwqW3KntsapmcJIFfJYfrs9a5bYT9VwaRMAVTb6Xzk0Wbm2L5ZEHT")
-    # import ipdb
-    # ipdb.set_trace()
     result = push_service.notify_multiple_devices(fcm_ids, title, body)
     return Response(result)
 
@@ -42,12 +53,9 @@ def send_push(request, *args, **kwargs):
     if request.method == 'POST':
         title = request.data['title']
         body = request.data['body']
-        fcm_ids = request.data['fcm_ids']
         query = request.data['query']
         lists = request.data['lists']
-        # import ipdb
-        # ipdb.set_trace()
-        return send_push_notification(title, body, fcm_ids, query, lists)
+        return send_push_notification(title, body, query, lists)
 
 
 def send_sms_fcm(data):
@@ -69,17 +77,12 @@ def send_sms(request, *args, **kwargs):
         campaigns = request.data['campaign']
         return send_sms_fcm(campaigns)
 
-    # import ipdb
-    # ipdb.set_trace()
-    # send_push_notification(title, body, fcm_ids)
-
 
 def perform_search(query, lists):
-    sexs='male'
-    search_query = SearchQuerySet().filter(SQ(lists=lists) & SQ(sex=sexs))
-    print(query)
-    for item in search_query:
-        print(item.email)
-    # print(search_query)
-    import ipdb
-    ipdb.set_trace()
+    if 'sex' in query:
+        search_query = SearchQuerySet().filter(SQ(lists=lists) & SQ(sex=query['sex']))
+
+    elif 'age' in query:
+        search_query = SearchQuerySet().filter(SQ(lists=lists) & SQ(age=query['age']))
+
+    return search_query

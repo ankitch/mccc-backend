@@ -127,7 +127,7 @@ class CampaignSerializer(serializers.ModelSerializer):
 
 class CampaignDetailSerializer(serializers.ModelSerializer):
     customers = serializers.SerializerMethodField()
-    segments = serializers.SerializerMethodField()
+    # segments = serializers.SerializerMethodField()
 
     def get_customers(self, obj):
         lst = []

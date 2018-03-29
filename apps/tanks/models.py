@@ -99,7 +99,7 @@ class Settings(models.Model):
 
 class Segments(models.Model):
     name = models.CharField(max_length=255)
-    query = models.CharField(max_length=255)
+    query = JSONField()
     lists = models.ManyToManyField(List, related_name='segments', through='SegmentList')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
