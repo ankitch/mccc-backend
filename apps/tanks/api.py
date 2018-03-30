@@ -1,3 +1,4 @@
+from apps.send.api import perform_search
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignEmailSerializer, SettingsSerializer, CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 from rest_framework import viewsets
@@ -29,10 +30,8 @@ class ListViewSet(viewsets.ModelViewSet):
                 segments.append(items.name)
             except IndexError:
                 pass
-        # return Response({})
+
         serializer = SegmentSerializer(lis, many=True).data
-        # import ipdb
-        # ipdb.set_trace()
         return Response(serializer)
 
 
@@ -79,11 +78,23 @@ class SegmentViewSet(viewsets.ModelViewSet):
 def grape_mail_load(request, *args, **kwargs):
     id = kwargs.get('pk')
     campaign = Campaign.objects.get(id=id)
-    print(campaign.emails)
+
     return Response(campaign.emails)
 
-# @api_view(['POST'])
-# def grape_mail_store(request, *args, **kwargs):
-#     id = kwargs.get('pk')
-#     campaign = Campaign.objects.get(id=id)
-#
+
+@api_view(['GET'])
+def segment(request, *args, **kwargs):
+    campaign_id = kwargs.get('pk')
+    segment_id = kwargs.get('segmentpk')
+
+    get_template = Campaign.objects.get(pk=campaign_id).template
+    get_segment = Campaign.objects.get(pk=campaign_id).list.segments.get(pk=segment_id).query
+    get_lists = Campaign.objects.get(pk=campaign_id).list
+    phone_list = []
+
+    search_result = perform_search(get_segment, get_lists)
+
+    for item in search_result:
+        phone_list.append(item.phone)
+
+    return Response({'+977': phone_list, 'template': get_template})

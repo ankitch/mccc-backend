@@ -32,6 +32,7 @@ urlpatterns = [
     path('v1/send/sms/', send_sms),
     # path('v1/list/<int:pk>/export/', tank_views.export_customer)
     path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export-customers'),
+    path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='export-customers'),
 ]
 
 if settings.DEBUG:

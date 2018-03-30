@@ -58,9 +58,10 @@ def send_push(request, *args, **kwargs):
         return send_push_notification(title, body, query, lists)
 
 
-def send_sms_fcm(data):
+def send_sms_fcm(campaign, segment):
     data_message = {
-        'campaign': data
+        'campaign': campaign,
+        'segment': segment
     }
     push_service = FCMNotification(
         api_key=settings.FCM_API_KEY_SEND)
@@ -75,6 +76,7 @@ def send_sms_fcm(data):
 def send_sms(request, *args, **kwargs):
     if request.method == 'POST':
         campaigns = request.data['campaign']
+        segment = request.data['segment']
         return send_sms_fcm(campaigns)
 
 
