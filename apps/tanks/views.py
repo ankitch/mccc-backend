@@ -1,11 +1,18 @@
+import ast
+
 import xlwt
 from django import forms
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.db import IntegrityError
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
+from haystack.management.commands import rebuild_index, update_index
+
 from apps.tanks.models import Customer, List
+
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
 
 def export_customers(request, pk):
     wb = xlwt.Workbook(encoding='utf-8')
@@ -16,7 +23,7 @@ def export_customers(request, pk):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['id', 'full_name', 'email', 'phone', 'add_fields'] # add_fields
+    columns = ['id', 'full_name', 'email', 'phone', 'add_fields']  # add_fields
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
@@ -42,22 +49,35 @@ def import_customers(request, pk):
         form = UploadFileForm(request.POST, request.FILES)
 
         if form.is_valid():
-            new_customers = []
-            data = request.FILES['file']
+            file_handle = request.FILES['file'].get_array()[1:]
             map_dict = ['full_name', 'email', 'phone', 'add_fields']
-            create_customers = []
-
-            for cus in data:
-                kgs = {}
-                for index, val in enumerate(cus):
-                    import ipdb
-                    ipdb.set_trace()
-
+            new_customers = []
+            customer_ids = []
+            for item in file_handle:
+                dict_cus = {}
+                for index, val in enumerate(item):
                     attr = map_dict[index]
-                    if attr in ['email', 'phone']:
-                        val = val
-                    kgs[attr] = val
-                customer = Customer(**kgs)
+                    if index == 3:
+                        dict_cus[attr] = val = ast.literal_eval(val)
+                    else:
+                        dict_cus[attr] = val
+                    print(type(val), index)
+                    print(val)
+                customer = Customer(**dict_cus)
                 customer.id = None
                 new_customers.append(customer)
+            try:
+                res = Customer.objects.bulk_create(new_customers)
+                for cus in res:
+                    customer_ids.append(cus.id)
+            except IntegrityError:
+                return HttpResponseBadRequest('ERROR')
+            lists = get_object_or_404(List, pk=pk)
+            lists.customers.add(*customer_ids)
+            update_index.Command().handle(interactive=False)
 
+            return HttpResponse("OK")
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
