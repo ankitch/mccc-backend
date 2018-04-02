@@ -10,7 +10,7 @@ from mccc import settings
 def email_to_ses(emails):
     send_mail('Subject here',
               'Sorry this  is a test message',
-              'from@example.com',
+              'from@example.com ',
               emails,
               fail_silently=False, )
     print(emails)
