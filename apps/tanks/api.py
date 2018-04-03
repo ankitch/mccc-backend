@@ -1,12 +1,12 @@
-from apps.send.api import perform_search
-from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
-    CampaignEmailSerializer, SettingsSerializer, CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from .models import Customer, List, Campaign, Settings, Segments
-
-from django.shortcuts import render, get_object_or_404
-from rest_framework.response import Response
 from rest_framework.decorators import api_view, detail_route
+from rest_framework.response import Response
+
+from apps.send.api import perform_search
+from .models import Customer, List, Campaign, Segments, SettingConfig
+from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
+    CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -58,11 +58,6 @@ class CampaignViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class SettingsViewSet(viewsets.ModelViewSet):
-    queryset = Settings.objects.all().order_by('-id')
-    serializer_class = SettingsSerializer
-
-
 class SegmentViewSet(viewsets.ModelViewSet):
     queryset = Segments.objects.all().order_by('-id')
     serializer_class = SegmentSerializer
@@ -98,3 +93,21 @@ def segment(request, *args, **kwargs):
         phone_list.append(item.phone)
 
     return Response({'+977': phone_list, 'template': get_template})
+
+
+# for settings singleton
+# class
+config = SettingConfig.get_solo()
+
+
+@api_view(['GET', 'POST'])
+def create_settings(request, *args, **kwargs):
+    if request.method == 'GET':
+        return Response({'attributes': config.attributes})
+
+    elif request.method == 'POST':
+        data = request.data['attributes']
+        sets = SettingConfig.objects.get(pk=1)
+        sets.attributes = data
+        sets.save()
+        return Response({'attributes': sets.attributes})

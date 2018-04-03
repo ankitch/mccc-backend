@@ -1,5 +1,6 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from solo.models import SingletonModel
 
 
 class List(models.Model):
@@ -9,8 +10,6 @@ class List(models.Model):
 
     def __str__(self):
         return self.name
-
-    # Create your models here.
 
 
 class Customer(models.Model):
@@ -43,8 +42,8 @@ class ListCustomer(models.Model):
         return '%s  - %s' % (self.list, self.customer)
 
     #
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
 
 
 class Campaign(models.Model):
@@ -60,8 +59,8 @@ class Campaign(models.Model):
         return self.name
 
         # #
-        class Meta:
-            auto_created = True
+        # class Meta:
+        #     auto_created = True
 
 
 class Leaf(object):
@@ -93,8 +92,11 @@ class Leaf(object):
                 self.text += str(item) + ','
 
 
-class Settings(models.Model):
-    settings = JSONField()
+class SettingConfig(SingletonModel):
+    attributes = JSONField(null=True)
+
+    class Meta:
+        verbose_name = "Additional Fields"
 
 
 class Segments(models.Model):

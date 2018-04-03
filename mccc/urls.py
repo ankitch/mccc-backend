@@ -16,7 +16,6 @@ router = DefaultRouter()
 router.register('customers',tank_api.CustomerViewSet)
 router.register('lists',tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
-router.register('settings', tank_api.SettingsViewSet)
 router.register('segments', tank_api.SegmentViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
 
@@ -34,6 +33,7 @@ urlpatterns = [
     path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export-customers'),
     path('v1/lists/<int:pk>/import/customers/', tank_views.import_customers, name='import_customers'),
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
+    path('v1/settings', tank_api.create_settings, name="settings")
 ]
 
 if settings.DEBUG:

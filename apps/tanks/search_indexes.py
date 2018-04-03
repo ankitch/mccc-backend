@@ -1,7 +1,6 @@
 from haystack import indexes
 
 from .models import Customer
-from .models import Settings
 
 
 class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
@@ -14,7 +13,7 @@ class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
     sex = indexes.CharField()
     lists = indexes.MultiValueField(indexed=True, stored=True)
 
-    def prepare_age(self,obj):
+    def prepare_age(self, obj):
         return obj.add_fields['age']
 
     def prepare_sex(self, obj):

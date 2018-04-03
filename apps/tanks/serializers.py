@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
-from .models import Customer, List, Campaign, Settings, Segments
+from .models import Customer, List, Campaign, Segments, SettingConfig
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -19,6 +19,12 @@ class CustomerSerializer(serializers.ModelSerializer):
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
+        fields = '__all__'
+
+
+class SettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SettingConfig
         fields = '__all__'
 
 
@@ -66,7 +72,7 @@ class ListDetailSerializer(serializers.ModelSerializer):
 class SegmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Segments
-        fields = ('id', 'name', 'query','created_at', 'updated_at')
+        fields = ('id', 'name', 'query', 'created_at', 'updated_at')
 
 
 class SegmentDetailSerializer(serializers.ModelSerializer):
@@ -127,6 +133,7 @@ class CampaignSerializer(serializers.ModelSerializer):
 
 class CampaignDetailSerializer(serializers.ModelSerializer):
     customers = serializers.SerializerMethodField()
+
     # segments = serializers.SerializerMethodField()
 
     def get_customers(self, obj):
@@ -148,9 +155,3 @@ class CampaignEmailSerializer(serializers.ModelSerializer):
 
     def get_email(self, obj):
         print(obj)
-
-
-class SettingsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Settings
-        fields = '__all__'
