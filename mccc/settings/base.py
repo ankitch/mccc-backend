@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 
 ]
 
-
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -56,7 +55,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mccc.urls'
-
 
 TEMPLATES = [
     {

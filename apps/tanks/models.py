@@ -42,8 +42,8 @@ class ListCustomer(models.Model):
         return '%s  - %s' % (self.list, self.customer)
 
     #
-    # class Meta:
-    #     auto_created = True
+    class Meta:
+        auto_created = True
 
 
 class Campaign(models.Model):
@@ -58,9 +58,8 @@ class Campaign(models.Model):
     def __str__(self):
         return self.name
 
-        # #
-        # class Meta:
-        #     auto_created = True
+        class Meta:
+            auto_created = True
 
 
 class Leaf(object):
@@ -75,11 +74,8 @@ class Leaf(object):
             elif isinstance(value, list):
                 self.recl(value)
             else:
-                # print(value)
                 self.text += str(value) + ','
 
-                # print(key:value)
-                # return key, value
 
     def recl(self, lis):
         for item in lis:

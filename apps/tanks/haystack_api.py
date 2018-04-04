@@ -9,7 +9,7 @@ from apps.tanks.serializers import CustomerSerializer
 class CustomerSearchSerializer(HaystackSerializer):
     class Meta:
         index_classes = [CustomerIndex]
-        fields = ('full_name','text', 'email', 'phone', 'fcm_id','lists', 'age', 'sex')
+        fields = ('full_name', 'text', 'email', 'phone', 'fcm_id', 'lists', 'age', 'sex')
 
 
 class CustomerSearchView(HaystackViewSet):
