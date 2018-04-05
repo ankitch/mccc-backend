@@ -58,8 +58,8 @@ class Campaign(models.Model):
     def __str__(self):
         return self.name
 
-        class Meta:
-            auto_created = True
+    class Meta:
+        auto_created = True
 
 
 class Leaf(object):
@@ -114,3 +114,5 @@ class SegmentList(models.Model):
 
     def __str__(self):
         return '%s  - %s' % (self.list, self.segments)
+
+

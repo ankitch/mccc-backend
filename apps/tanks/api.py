@@ -103,7 +103,8 @@ config = SettingConfig.get_solo()
 @api_view(['GET', 'POST'])
 def create_settings(request, *args, **kwargs):
     if request.method == 'GET':
-        return Response({'attributes': config.attributes})
+        sets = SettingConfig.objects.get(pk=1)
+        return Response({'attributes': sets.attributes})
 
     elif request.method == 'POST':
         data = request.data['attributes']
