@@ -30,6 +30,7 @@ urlpatterns = [
     # path('v1/list/<int:pk>/export/', tank_views.export_customer)
     path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export-customers'),
     path('v1/lists/<int:pk>/import/customers/', tank_views.import_customers, name='import_customers'),
+    path('v1/lists/segments/create/', tank_api.create_list_segment, name='list_segment'),
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
     path('v1/settings', tank_api.create_settings, name="settings")
 ]

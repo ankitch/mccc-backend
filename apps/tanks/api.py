@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, detail_route
 from rest_framework.response import Response
 
 from apps.send.api import perform_search
-from .models import Customer, List, Campaign, Segments, SettingConfig
+from .models import Customer, List, Campaign, Segments, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 
@@ -112,3 +112,13 @@ def create_settings(request, *args, **kwargs):
         sets.attributes = data
         sets.save()
         return Response({'attributes': sets.attributes})
+
+
+@api_view(['POST'])
+def create_list_segment(request, *args, **kwargs):
+    list_id = request.data['list_id']
+    segment_id = request.data['segments_id']
+    print(list_id, segment_id)
+    create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
+    print(create)
+    return Response({'create': "sads"})

@@ -76,7 +76,6 @@ class Leaf(object):
             else:
                 self.text += str(value) + ','
 
-
     def recl(self, lis):
         for item in lis:
             if isinstance(item, list):
@@ -115,4 +114,5 @@ class SegmentList(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.segments)
 
-
+    class Meta:
+        auto_created = True
