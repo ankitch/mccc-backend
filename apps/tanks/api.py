@@ -92,7 +92,7 @@ def segment(request, *args, **kwargs):
     for item in search_result:
         phone_list.append(item.phone)
 
-    return Response({'+977': phone_list, 'template': get_template})
+    return Response({'customers': {'+977': phone_list}, 'template': get_template})
 
 
 # for settings singleton

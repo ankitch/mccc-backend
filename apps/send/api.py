@@ -76,7 +76,9 @@ def send_sms_fcm(campaign, segment):
 def send_sms(request, *args, **kwargs):
     if request.method == 'POST':
         campaigns = request.data['campaign']
-        segment = request.data['segment']
+        # segment = request.data['segment']
+        import ipdb
+        ipdb.set_trace()
         return send_sms_fcm(campaigns)
 
 
