@@ -61,8 +61,9 @@ def send_push(request, *args, **kwargs):
 def send_sms_fcm(campaign, segment):
     data_message = {
         'campaign': campaign,
-        'segment': segment
+        'segment': segment,
     }
+    print(data_message)
     push_service = FCMNotification(
         api_key=settings.FCM_API_KEY_SEND)
     result = push_service.single_device_data_message(
@@ -76,10 +77,8 @@ def send_sms_fcm(campaign, segment):
 def send_sms(request, *args, **kwargs):
     if request.method == 'POST':
         campaigns = request.data['campaign']
-        # segment = request.data['segment']
-        import ipdb
-        ipdb.set_trace()
-        return send_sms_fcm(campaigns)
+        segment = request.data['segment']
+        return send_sms_fcm(campaigns, segment)
 
 
 def perform_search(query, lists):

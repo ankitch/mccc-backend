@@ -5,8 +5,7 @@ from rest_framework.response import Response
 
 from apps.send.api import perform_search
 from .models import Customer, List, Campaign, Segments, SettingConfig, SegmentList
-from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
-    CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
+from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -88,7 +87,6 @@ def segment(request, *args, **kwargs):
     phone_list = []
 
     search_result = perform_search(get_segment, get_lists)
-
     for item in search_result:
         phone_list.append(item.phone)
 
@@ -97,7 +95,7 @@ def segment(request, *args, **kwargs):
 
 # for settings singleton
 # class
-config = SettingConfig.get_solo()
+# config = SettingConfig.get_solo()
 
 
 @api_view(['GET', 'POST'])
