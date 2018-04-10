@@ -89,7 +89,8 @@ def segment(request, *args, **kwargs):
     search_result = perform_search(get_segment, get_lists)
     for item in search_result:
         phone_list.append(item.phone)
-
+    # import ipdb
+    # ipdb.set_trace()
     return Response({'customers': {'+977': phone_list}, 'template': get_template})
 
 

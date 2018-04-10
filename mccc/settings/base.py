@@ -25,8 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'haystack',
-    # 'django_q'
-    # 'django_elasticsearch_dsl',
+    'django_q',
     'apps.users',
     'apps.tanks',
 
@@ -138,22 +137,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Q_CLUSTER = {
-#     'name': 'mccc_backend',
-#     'workers': 8,
-#     'recycle': 500,
-#     'timeout': 60,
-#     'compress': True,
-#     'save_limit': 250,
-#     'queue_limit': 500,
-#     'cpu_affinity': 1,
-#     'label': 'Django Q',
-#     'redis': {
-#         'host': '127.0.0.1',
-#         'port': 6379,
-#         'db': 0, }
-# }
-
+# redis defaults
+Q_CLUSTER = {
+    'redis': {
+        'host': 'localhost',
+        'port': 6379,
+        'db': 0,
+        'password': None,
+        'socket_timeout': None,
+        'charset': 'utf-8',
+        'errors': 'strict',
+        'unix_socket_path': None
+    }
+}
 # haystack settings for elastic search
 HAYSTACK_CONNECTIONS = {
     'default': {

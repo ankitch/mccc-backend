@@ -1,4 +1,8 @@
+from datetime import timezone
+
 from django.core.mail import send_mail
+from django_q.models import Schedule
+from django_q.tasks import schedule, async
 from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
 from rest_framework.decorators import api_view
@@ -70,7 +74,7 @@ def send_sms_fcm(campaign, segment):
         registration_id="dHTO1U7CKP4:APA91bGoXJL6DGySqAInuFv8Eu8KNV8vjpSb1PYX-KZQ3XMCKtWYKCitEOQBE0OUmQ3wt-16HRTy4Cn3leYwKh6ZH7LMLoLWJpEASddNJ9rlzHVYm2cPS3PAsdyXqSEqoisbOe1k5GW3",
         data_message=data_message)
 
-    return Response(result)
+    return "{sad}"
 
 
 @api_view(['POST', 'GET'])
@@ -89,3 +93,18 @@ def perform_search(query, lists):
         search_query = SearchQuerySet().filter(SQ(lists=lists) & SQ(age=query['age']))
 
     return search_query
+
+
+@api_view(['POST'])
+def schedule_sms(request, *args, **kwargs):
+    campaigns = request.data['campaign']
+    segments = request.data['segment']
+    schedule('apps.send.api.send_sms_fcm', campaign=campaigns, segment=segments,
+             hook='apps.send.hooks.print_result', schedule_type=Schedule.ONCE,
+             next_run='2018-04-10T17:11:00+0545', repeats=1)
+
+    return Response({'schedule': 'done'})
+
+
+def send_command(campaign, segment):
+    return send_sms_fcm(campaign, segment)
