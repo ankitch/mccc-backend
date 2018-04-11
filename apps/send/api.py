@@ -1,8 +1,6 @@
-from datetime import timezone
-
 from django.core.mail import send_mail
 from django_q.models import Schedule
-from django_q.tasks import schedule, async
+from django_q.tasks import schedule
 from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
 from rest_framework.decorators import api_view
@@ -99,10 +97,11 @@ def perform_search(query, lists):
 def schedule_sms(request, *args, **kwargs):
     campaigns = request.data['campaign']
     segments = request.data['segment']
+    nextrun = request.data['next_run'],
+    sch_type = request.data['sch_type']
     schedule('apps.send.api.send_sms_fcm', campaign=campaigns, segment=segments,
-             hook='apps.send.hooks.print_result', schedule_type=Schedule.ONCE,
-             next_run='2018-04-10T17:11:00+0545', repeats=1)
-
+             hook='apps.send.hooks.print_result', schedule_type=sch_type,
+             next_run=nextrun[0], repeats=1)
     return Response({'schedule': 'done'})
 
 
