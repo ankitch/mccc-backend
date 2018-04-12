@@ -1,5 +1,4 @@
 from django.core.mail import send_mail
-from django_q.models import Schedule
 from django_q.tasks import schedule
 from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
@@ -12,35 +11,40 @@ from mccc import settings
 def email_to_ses(emails):
     send_mail('Subject here',
               'Sorry this  is a test message',
-              'from@example.com ',
+              'from@example.com',
               emails,
               fail_silently=False, )
     print(emails)
+    return Response({'Status': 'email delivered'})
 
 
 @api_view(['POST', 'GET'])
-def send_email(request, *args, **kwargs):
+def email_view(request, *args, **kwargs):
     if request.method == 'POST':
-        emails = []
         query = request.data['query']
         lists = request.data['lists']
+        return send_email(query, lists)
 
-        search_results = perform_search(query, lists)
-
-        for items in search_results:
-            emails.append(items.email)
-
-        email_to_ses(emails)
     else:
         print(request.data)
 
-    return Response({'good': 'nice'})
+
+def send_email(query, lists):
+    search_results = perform_search(query, lists)
+    emails = []
+    for items in search_results:
+        emails.append(items.email)
+
+    return email_to_ses(emails)
 
 
-def send_push_notification(title, body, query, lists):
+# TODO
+# to enable push notification by getting body
+def send_push_notification(query, lists):
     search_results = perform_search(query, lists)
     fcm_ids = []
-
+    title = "title"
+    body = "body"
     for items in search_results:
         fcm_ids.append(items.fcm_id)
 
@@ -57,7 +61,7 @@ def send_push(request, *args, **kwargs):
         body = request.data['body']
         query = request.data['query']
         lists = request.data['lists']
-        return send_push_notification(title, body, query, lists)
+        return send_push_notification(query, lists)
 
 
 def send_sms_fcm(campaign, segment):
@@ -93,17 +97,123 @@ def perform_search(query, lists):
     return search_query
 
 
+# @api_view(['POST'])
+# def schedule_sms(request, *args, **kwargs):
+#     name = request.data.get('name')
+#     campaigns = request.data.get('campaign')
+#     segments = request.data.get('segment')
+#     next_run = request.data.get('next_run')
+#     sch_type = request.data.get('sch_type')
+#     repeats = request.data.get('repeat')
+#     minutes = request.data.get('minutes')
+#
+#     if sch_type == 'O':
+#         schedule('apps.send.api.send_sms_fcm', campaign=campaigns, segment=segments,
+#                  name=name,
+#                  hook='apps.send.hooks.print_result', schedule_type=sch_type,
+#                  next_run=next_run)
+#
+#     elif sch_type == 'I':
+#         schedule('apps.send.api.send_sms_fcm', campaign=campaigns, segment=segments,
+#                  name=name,
+#                  hook='apps.send.hooks.print_result', schedule_type=sch_type,
+#                  next_run=next_run, repeats=repeats, minutes=minutes)
+#
+#     else:
+#         schedule('apps.send.api.send_sms_fcm', campaign=campaigns, segment=segments,
+#                  name=name,
+#                  hook='apps.send.hooks.print_result', schedule_type=sch_type,
+#                  next_run=next_run, repeats=repeats)
+#
+#     return Response({'schedule': 'done'})
+
+
 @api_view(['POST'])
-def schedule_sms(request, *args, **kwargs):
-    campaigns = request.data['campaign']
-    segments = request.data['segment']
-    nextrun = request.data['next_run'],
-    sch_type = request.data['sch_type']
-    schedule('apps.send.api.send_sms_fcm', campaign=campaigns, segment=segments,
-             hook='apps.send.hooks.print_result', schedule_type=sch_type,
-             next_run=nextrun[0], repeats=1)
+def schedule_campaign(request, *args, **kwargs):
+    name = request.data.get('name')
+    next_run = request.data.get('next_run')
+    sch_type = request.data.get('sch_type')
+    repeats = request.data.get('repeat')
+    minutes = request.data.get('minutes')
+    channel = request.data.get('channels')
+
+    campaigns = request.data.get('campaign')
+    segments = request.data.get('segment')
+
+    query = request.data.get('query')
+    lists = request.data.get('lists')
+
+    sms_func = 'apps.send.api.send_sms_fcm'
+    email_func = 'apps.send.api.send_email'
+    push_func = 'apps.send.api.send_push_notification'
+
+    if channel == "SMS":
+        schedule_sms(sms_func, name, campaigns, segments, next_run, sch_type, repeats, minutes)
+    elif channel == "Email":
+        schedule_email_push(email_func, name, query, lists, next_run, sch_type, repeats, minutes)
+
+    elif channel == "Push":
+        schedule_email_push(push_func, name, query, lists, next_run, sch_type, repeats, minutes)
+
+    # Todo
+    # trigger all
+    elif channel == "All":
+        trigger_all(push_func, email_func, campaigns, segments, sms_func, name, query, lists, next_run, sch_type, repeats, minutes)
+
     return Response({'schedule': 'done'})
 
 
-def send_command(campaign, segment):
-    return send_sms_fcm(campaign, segment)
+def schedule_sms(trigger_func, name, campaign, segment, next_run, sch_type, repeats, minutes):
+    if sch_type == 'O':
+        schedule(trigger_func,
+                 campaign=campaign,
+                 segment=segment,
+                 hook='apps.send.hooks.print_result', schedule_type=sch_type,
+                 next_run=next_run)
+
+    elif sch_type == 'I':
+        schedule(trigger_func,
+                 campaign=campaign,
+                 segment=segment,
+                 name=name,
+                 hook='apps.send.hooks.print_result', schedule_type=sch_type,
+                 next_run=next_run, repeats=repeats, minutes=minutes)
+
+    else:
+        schedule(trigger_func,
+                 campaign=campaign,
+                 segment=segment,
+                 name=name,
+                 hook='apps.send.hooks.print_result', schedule_type=sch_type,
+                 next_run=next_run, repeats=repeats)
+
+
+def schedule_email_push(trigger_func, name, query, lists, next_run, sch_type, repeats, minutes):
+    if sch_type == 'O':
+        schedule(trigger_func,
+                 query=query,
+                 lists=lists,
+                 hook='apps.send.hooks.print_result', schedule_type=sch_type,
+                 next_run=next_run)
+
+    elif sch_type == 'I':
+        schedule(trigger_func,
+                 query=query,
+                 lists=lists,
+                 name=name,
+                 hook='apps.send.hooks.print_result', schedule_type=sch_type,
+                 next_run=next_run, repeats=repeats, minutes=minutes)
+
+    else:
+        schedule(trigger_func,
+                 query=query,
+                 lists=lists,
+                 name=name,
+                 hook='apps.send.hooks.print_result', schedule_type=sch_type,
+                 next_run=next_run, repeats=repeats)
+
+
+def trigger_all(push_func, email_func, campaign, segment, sms_func, name, query, lists, next_run, sch_type, repeats, minutes):
+    schedule_sms(sms_func, name, campaign, segment, next_run, sch_type, repeats, minutes)
+    schedule_email_push(email_func, name, query, lists, next_run, sch_type, repeats, minutes)
+    schedule_email_push(push_func, name, query, lists, next_run, sch_type, repeats, minutes)
