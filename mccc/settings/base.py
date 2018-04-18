@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django_q',
     'apps.users',
     'apps.tanks',
+    'apps.url_shortner',
 
     'rest_framework',
     'corsheaders',

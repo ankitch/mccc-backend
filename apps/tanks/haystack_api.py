@@ -13,5 +13,4 @@ class CustomerSearchSerializer(HaystackSerializer):
 
 
 class CustomerSearchView(HaystackViewSet):
-    # index_models = [CustomerIndex]
     serializer_class = CustomerSearchSerializer
