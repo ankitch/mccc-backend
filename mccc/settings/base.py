@@ -171,4 +171,7 @@ STATIC_URL = '/static/'
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")
 
+SHORTCODE_MAX = 10
+SHORTCODE_MIN = 4
+
 from .auth_settings import *

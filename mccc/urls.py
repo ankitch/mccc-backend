@@ -1,14 +1,15 @@
 from django.conf import settings
 from django.conf.urls import include
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
-from apps.send.api import send_email, send_push, send_sms, schedule_campaign, email_view
+from apps.send.api import send_push, send_sms, schedule_campaign, email_view
 from apps.tanks import api as tank_api
+from apps.tanks import views as tank_views
 from apps.tanks.api import grape_mail_load
 from apps.tanks.haystack_api import CustomerSearchView
-from apps.tanks import views as tank_views
+from apps.url_shortner.views import short_url_redirect, ShortRedirectView
 
 router = DefaultRouter()
 
@@ -36,7 +37,11 @@ urlpatterns = [
 
     path('v1/lists/segments/create/', tank_api.create_list_segment, name='list_segment'),
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
-    path('v1/settings', tank_api.create_settings, name="settings")
+    path('v1/settings', tank_api.create_settings, name="settings"),
+
+    re_path(r'^s1/(?P<shortcode>[-\w]+)/$', short_url_redirect),
+    re_path(r'^s2/(?P<shortcode>[-\w]+)/$', ShortRedirectView.as_view()),
+
 ]
 
 if settings.DEBUG:
