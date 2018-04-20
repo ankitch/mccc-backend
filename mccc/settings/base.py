@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.tanks',
     'apps.url_shortner',
+    'apps.analytics',
 
     'rest_framework',
     'corsheaders',
@@ -171,7 +172,7 @@ STATIC_URL = '/static/'
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")
 
-SHORTCODE_MAX = 10
+SHORTCODE_MAX = 15
 SHORTCODE_MIN = 4
 
 from .auth_settings import *

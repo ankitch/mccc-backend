@@ -1,19 +1,17 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.views import View
 
-from apps.url_shortner.models import ShortenedUrl
-
-
 # Create your views here.
+from .models import ShortenedUrl
 
-
-def short_url_redirect(request, shortcode=None, *args, **kwargs):
-    print(shortcode)
-    obj = ShortenedUrl.objects.get(short_code=shortcode)
-    print(obj)
-    return HttpResponse("hello {sc}".format(sc=obj.url))
+#
+# def short_url_redirect(request, shortcode=None, *args, **kwargs):
+#     obj = get_object_or_404(ShortenedUrl, short_code=shortcode)
+#     return HttpResponseRedirect(obj.url)
 
 
 class ShortRedirectView(View):
     def get(self, request, *args, shortcode=None, **kwargs):
-        return HttpResponse("hello again")
+        obj = get_object_or_404(ShortenedUrl, short_code=shortcode)
+        return HttpResponseRedirect(obj.url)

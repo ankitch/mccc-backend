@@ -8,8 +8,8 @@ SHORTCODE_MAX = getattr(settings, 'SHORTCODE_MAX', 15)
 
 class ShortenedUrlManager(models.Manager):
     def all(self, *args, **kwargs):
-        qs = super(ShortenedUrlManager, self).all(*args, **kwargs)
-        qs = qs.filter(active=False)
+        qs_main = super(ShortenedUrlManager, self).all(*args, **kwargs)
+        qs = qs_main.filter(active=True)
         return qs
 
     def refresh_shortcode(self, items=10):
@@ -20,7 +20,6 @@ class ShortenedUrlManager(models.Manager):
         new_code = 0
         for q in qs:
             q.short_code = create_short_code(q)
-            print(q.id)
             q.save()
             new_code += 1
         return "New code made {i}".format(i=new_code)

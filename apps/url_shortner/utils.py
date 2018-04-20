@@ -7,7 +7,7 @@ SHORTCODE_MIN = getattr(settings, 'SHORTCODE_MIN', 6)
 
 
 def short_code_generator(size=SHORTCODE_MIN, chars=string.ascii_lowercase + string.digits):
-    new_code = " "
+    new_code = ""
     for _ in range(size):
         new_code += random.choice(chars)
 
