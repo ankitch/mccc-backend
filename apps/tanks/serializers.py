@@ -102,7 +102,7 @@ class SegmentDetailSerializer(serializers.ModelSerializer):
 
 
 class CampaignSerializer(serializers.ModelSerializer):
-    list = ListSerializer(read_only=True)
+    # list = ListSerializer(read_only=True)
     segments = serializers.SerializerMethodField()
 
     def get_segments(self, obj):
@@ -121,11 +121,11 @@ class CampaignSerializer(serializers.ModelSerializer):
             'results': serializer.data,
         }
 
-    # list_name = serializers.SerializerMethodField('get_lists_name')
+    list_name = serializers.SerializerMethodField('get_lists_name')
 
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'details', 'list', 'emails', 'created_at', 'updated_at', 'segments', 'template')
+        fields = ('id', 'name', 'details', 'list', 'emails', 'created_at', 'updated_at', 'segments', 'template', 'list_name')
 
     def get_lists_name(self, obj):
         return obj.list.name

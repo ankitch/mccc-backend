@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'solo',
-
+    'solo.apps.SoloAppConfig'
 ]
 
 SITE_ID = 1

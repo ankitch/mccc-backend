@@ -102,8 +102,11 @@ def segment(request, *args, **kwargs):
 @api_view(['GET', 'POST'])
 def create_settings(request, *args, **kwargs):
     if request.method == 'GET':
-        sets = SettingConfig.objects.get(pk=1)
-        return Response({'attributes': sets.attributes})
+        try:
+            sets = SettingConfig.objects.get(pk=1)
+            return Response({'attributes': sets.attributes})
+        except:
+            return Response({'not found'})
 
     elif request.method == 'POST':
         data = request.data['attributes']
