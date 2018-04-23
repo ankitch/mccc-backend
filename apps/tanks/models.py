@@ -41,7 +41,6 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    #
     class Meta:
         auto_created = True
 
@@ -58,8 +57,8 @@ class Campaign(models.Model):
     def __str__(self):
         return self.name
 
-    # class Meta:
-    #     auto_created = True
+    class Meta:
+        auto_created = True
 
 
 class Leaf(object):

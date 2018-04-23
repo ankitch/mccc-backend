@@ -9,7 +9,7 @@ from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
 from apps.tanks.api import grape_mail_load
 from apps.tanks.haystack_api import CustomerSearchView
-from apps.url_shortner.views import  ShortRedirectView
+from apps.url_shortner.views import ShortRedirectView
 
 router = DefaultRouter()
 
@@ -37,7 +37,7 @@ urlpatterns = [
 
     path('v1/lists/segments/create/', tank_api.create_list_segment, name='list_segment'),
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
-    path('v1/settings', tank_api.create_settings, name="settings"),
+    path('v1/settings/', tank_api.create_settings, name="settings"),
 
     re_path(r'^s1/(?P<shortcode>[\w-]+)/$', ShortRedirectView.as_view(), name='short_code')
 ]
