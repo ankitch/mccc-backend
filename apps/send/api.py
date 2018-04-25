@@ -5,16 +5,17 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from apps.send.schedules import schedule_sms, schedule_email_push, trigger_all
+from apps.tanks.models import Campaign
 from mccc import settings
 
 
-def email_to_ses(query, lists):
+def email_to_ses(query, lists, email_data):
     search_results = perform_search(query, lists)
     emails = []
     for items in search_results:
         emails.append(items.email)
     ses_mail = send_mail('Subject here',
-                         'Sorry this  is a test message',
+                         email_data,
                          'from@example.com',
                          emails,
                          fail_silently=False, )
@@ -26,14 +27,16 @@ def email_view(request, *args, **kwargs):
     if request.method == 'POST':
         query = request.data['query']
         lists = request.data['lists']
-        return send_email(query, lists)
+        campaign_id = request.data['campaign_id']
+        camp_email = Campaign.objects.get(pk=campaign_id).emails
+        return send_email(query, lists, camp_email)
 
     else:
         print(request.data)
 
 
-def send_email(query, lists):
-    email = email_to_ses(query, lists)
+def send_email(query, lists, email_data):
+    email = email_to_ses(query, lists, email_data)
     return Response(email)
 
 
