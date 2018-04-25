@@ -8,7 +8,11 @@ from apps.send.schedules import schedule_sms, schedule_email_push, trigger_all
 from mccc import settings
 
 
-def email_to_ses(emails):
+def email_to_ses(query, lists):
+    search_results = perform_search(query, lists)
+    emails = []
+    for items in search_results:
+        emails.append(items.email)
     ses_mail = send_mail('Subject here',
                          'Sorry this  is a test message',
                          'from@example.com',
@@ -29,11 +33,7 @@ def email_view(request, *args, **kwargs):
 
 
 def send_email(query, lists):
-    search_results = perform_search(query, lists)
-    emails = []
-    for items in search_results:
-        emails.append(items.email)
-    email = email_to_ses(emails)
+    email = email_to_ses(query, lists)
     return Response(email)
 
 
@@ -51,6 +51,7 @@ def send_push_notification(query, lists):
         api_key="AAAApd54CKA:APA91bHh60kTOjmJQP8qv8IcQtnkB3-uq-NZtmFGefneT3xlS5dfDEiPUVgjrOKVQdyamgTHn7vIfRvNI6I3vo6nwqW3KntsapmcJIFfJYfrs9a5bYT9VwaRMAVTb6Xzk0Wbm2L5ZEHT")
     result = push_service.notify_multiple_devices(fcm_ids, title, body)
     print(result)
+    print(query,lists)
     return result
 
 
@@ -74,9 +75,10 @@ def send_sms_fcm(campaign, segment):
         api_key=settings.FCM_API_KEY_SEND)
 
     result = push_service.single_device_data_message(
-        registration_id="dHTO1U7CKP4:APA91bGoXJL6DGySqAInuFv8Eu8KNV8vjpSb1PYX-KZQ3XMCKtWYKCitEOQBE0OUmQ3wt-16HRTy4Cn3leYwKh6ZH7LMLoLWJpEASddNJ9rlzHVYm2cPS3PAsdyXqSEqoisbOe1k5GW3",
+        registration_id="D7-E7A2DOc:APA91bG-CUiyt-_WEIcWTstlo9b7PCGytZz-qrIska6PCh2k5DyqDLMV2FrSNs3r2FU8-E3rzAnzEi91aF6y8SzwSOtKduUj1kghaavUrMc7KrkRVgEAgwi_c-vR3WXz-26vG02yMj6S",
         data_message=data_message)
-
+    print(result)
+    print(campaign, segment)
     return result
 
 
@@ -115,21 +117,20 @@ def schedule_campaign(request, *args, **kwargs):
     lists = request.data.get('lists')
 
     sms_func = 'apps.send.api.send_sms_fcm'
-    email_func = 'apps.send.api.send_email'
+    email_func = 'apps.send.api.email_to_ses'
     push_func = 'apps.send.api.send_push_notification'
 
     if channel == "SMS":
-        schedule_sms(sms_func, name, campaigns, segments, next_run, sch_type, repeats, minutes)
+        sch = schedule_sms(sms_func, name, campaigns, segments, next_run, sch_type, repeats, minutes)
     elif channel == "Email":
-        schedule_email_push(email_func, name, query, lists, next_run, sch_type, repeats, minutes)
+        sch = schedule_email_push(email_func, name, query, lists, next_run, sch_type, repeats, minutes)
 
     elif channel == "Push":
-        schedule_email_push(push_func, name, query, lists, next_run, sch_type, repeats, minutes)
+        sch = schedule_email_push(push_func, name, query, lists, next_run, sch_type, repeats, minutes)
 
     # Todo
     # trigger all
     elif channel == "All":
-        trigger_all(push_func, email_func, campaigns, segments, sms_func, name, query, lists, next_run, sch_type,
-                    repeats, minutes)
+        sch = trigger_all(push_func, email_func, campaigns, segments, sms_func, name, query, lists, next_run, sch_type,repeats, minutes)
 
-    return Response({'schedule': 'done'})
+    return Response({'schedule': 'created'})
