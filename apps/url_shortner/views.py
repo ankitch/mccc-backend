@@ -4,6 +4,8 @@ from django.views import View
 
 # Create your views here.
 from apps.analytics.models import ClickEvent
+from apps.analytics.signals import url_viewed_signal
+from apps.tanks.models import Customer
 from .models import ShortenedUrl
 
 #
@@ -13,7 +15,11 @@ from .models import ShortenedUrl
 
 
 class ShortRedirectView(View):
-    def get(self, request, *args, shortcode=None, **kwargs):
-        obj = get_object_or_404(ShortenedUrl, short_code=shortcode)
-        ClickEvent.objects.create_event(obj)
-        return HttpResponseRedirect(obj.url)
+
+    def get(self, request, *args, cus_id=None, shortcode=None, **kwargs):
+        short = get_object_or_404(ShortenedUrl, short_code=shortcode)
+        cus = get_object_or_404(Customer, id=cus_id)
+        # ClickEvent.objects.create_event(short)
+        url_viewed_signal.send(sender=short.__class__, cus=cus, short=short, request=request)
+        # ClickEvent.objects.add_person(cus)
+        return HttpResponseRedirect(short.url)

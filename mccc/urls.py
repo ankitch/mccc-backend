@@ -39,7 +39,7 @@ urlpatterns = [
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
     path('v1/settings/', tank_api.create_settings, name="settings"),
 
-    re_path(r'^s1/(?P<shortcode>[\w-]+)/$', ShortRedirectView.as_view(), name='short_code')
+    re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[0-9])/$', ShortRedirectView.as_view(), name='short_code')
 ]
 
 if settings.DEBUG:
