@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
+from apps.analytics.api import ObjectViewSet
 from apps.send.api import send_push, send_sms, schedule_campaign, email_view
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
@@ -18,6 +19,7 @@ router.register('lists', tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('segments', tank_api.SegmentViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
+router.register('analytics', ObjectViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,7 +41,7 @@ urlpatterns = [
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
     path('v1/settings/', tank_api.create_settings, name="settings"),
 
-    re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[0-9])/$', ShortRedirectView.as_view(), name='short_code')
+    re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[\d+])/$', ShortRedirectView.as_view(), name='short_code')
 ]
 
 if settings.DEBUG:

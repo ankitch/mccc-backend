@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from apps.analytics.signals import url_viewed_signal
-from apps.tanks.models import Customer
+from apps.tanks.models import Customer, Campaign
 from apps.url_shortner.models import ShortenedUrl
 
 
@@ -44,6 +44,7 @@ class ClickEvent(models.Model):
 class ObjectViewed(models.Model):
     customer = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE,null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -55,13 +56,13 @@ class ObjectViewed(models.Model):
         verbose_name_plural = 'Urls viewed'
 
 
-def url_viewed_receiver(sender, cus, short, request, *args, **kwargs):
+def url_viewed_receiver(sender, cus, short, camp, request, *args, **kwargs):
     # import ipdb
     # ipdb.set_trace()
     # print(sender)
     # print(cus.id)
     # print(short.short_code)
-    url_view = ObjectViewed(customer=cus, short_url=short)
+    url_view = ObjectViewed(customer=cus, short_url=short, campaign=camp)
     url_view.save()
 
 
