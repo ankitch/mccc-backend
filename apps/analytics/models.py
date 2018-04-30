@@ -44,7 +44,7 @@ class ClickEvent(models.Model):
 class ObjectViewed(models.Model):
     customer = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE)
-    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE,null=True, blank=True)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

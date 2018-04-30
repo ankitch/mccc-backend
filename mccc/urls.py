@@ -19,7 +19,6 @@ router.register('lists', tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('segments', tank_api.SegmentViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
-router.register('analytics', ObjectViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,7 +40,10 @@ urlpatterns = [
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
     path('v1/settings/', tank_api.create_settings, name="settings"),
 
-    re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[\d+])/$', ShortRedirectView.as_view(), name='short_code')
+    # path('v1/analytics/camp/<int:camp_id>/', get_analytics, name="analyticsfilter"),
+    re_path(r'^v1/analytics/camp/(?P<camp_id>[0-9])/$', ObjectViewSet.as_view()),
+    re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[\d+])/(?P<camp_id>[\d+])/$', ShortRedirectView.as_view(),
+            name='short_code')
 ]
 
 if settings.DEBUG:
