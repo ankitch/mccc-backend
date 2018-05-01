@@ -13,6 +13,7 @@ def email_to_ses(query, lists, email_data):
     search_results = perform_search(query, lists)
     emails = []
     for items in search_results:
+        email_data = email_data.format()
         emails.append(items.email)
     ses_mail = send_mail('Subject here',
                          email_data,
