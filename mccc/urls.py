@@ -4,14 +4,14 @@ from django.contrib import admin
 from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
-from apps.analytics.api import ObjectViewSet
+from apps.analytics.api import ObjectViewSet, AnalyticsViewSet
+from apps.analytics.views import dashboard_analytics, chart_data
 from apps.send.api import send_push, send_sms, schedule_campaign, email_view
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
 from apps.tanks.api import grape_mail_load
 from apps.tanks.haystack_api import CustomerSearchView
 from apps.url_shortner.views import ShortRedirectView
-from apps.analytics.views import dashboard_analytics
 
 router = DefaultRouter()
 
@@ -20,6 +20,7 @@ router.register('lists', tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('segments', tank_api.SegmentViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
+router.register('analytics', AnalyticsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,6 +43,7 @@ urlpatterns = [
     path('v1/settings/', tank_api.create_settings, name="settings"),
 
     re_path(r'^v1/analytics/camp/(?P<camp_id>[0-9])/$', ObjectViewSet.as_view()),
+    re_path(r'^v1/analytics/data/(?P<camp_id>[0-9])/$', chart_data),
     re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[\d+])/(?P<camp_id>[\d+])/$', ShortRedirectView.as_view(),
             name='short_code')
 ]
