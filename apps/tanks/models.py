@@ -2,6 +2,8 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from solo.models import SingletonModel
 
+from apps.url_shortner.models import ShortenedUrl
+
 
 class List(models.Model):
     name = models.CharField(max_length=255)
@@ -49,6 +51,7 @@ class Campaign(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
+    short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
     emails = models.TextField(blank=True)
     template = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

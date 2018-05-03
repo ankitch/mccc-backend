@@ -11,6 +11,7 @@ from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
 from apps.tanks.api import grape_mail_load
 from apps.tanks.haystack_api import CustomerSearchView
+from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
 
 router = DefaultRouter()
@@ -19,6 +20,7 @@ router.register('customers', tank_api.CustomerViewSet)
 router.register('lists', tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('segments', tank_api.SegmentViewSet)
+router.register('shortenedurl', ShortenedUrlViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
 router.register('analytics', AnalyticsViewSet)
 
@@ -42,10 +44,9 @@ urlpatterns = [
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
     path('v1/settings/', tank_api.create_settings, name="settings"),
 
-    re_path(r'^v1/analytics/camp/(?P<camp_id>[0-9])/$', ObjectViewSet.as_view()),
-    re_path(r'^v1/analytics/data/(?P<camp_id>[0-9])/$', chart_data),
-    re_path(r'^s1/(?P<shortcode>[\w-]+)/(?P<cus_id>[\d+])/(?P<camp_id>[\d+])/$', ShortRedirectView.as_view(),
-            name='short_code')
+    path('v1/analytics/camp/<int:camp_id>/', ObjectViewSet.as_view()),
+    path('v1/analytics/data/<int:camp_id>/', chart_data),
+    path('s1/<slug:shortcode>/<int:cus_id>/<int:camp_id>/', ShortRedirectView.as_view())
 ]
 
 if settings.DEBUG:
