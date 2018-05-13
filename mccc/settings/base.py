@@ -125,13 +125,6 @@ EMAIL_USE_TLS = True
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 #
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': (
-#         'rest_framework.renderers.JSONRenderer',
-#         # 'rest_framework.renderers.BrowsableAPIRenderer',
-#     )
-# }
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Kathmandu'
@@ -160,7 +153,7 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'elasticman',
+        'INDEX_NAME': 'sendtank',
     },
 }
 

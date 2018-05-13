@@ -82,7 +82,7 @@ def send_sms_fcm(campaign, segment):
         api_key=settings.FCM_API_KEY_SEND)
 
     result = push_service.single_device_data_message(
-        registration_id="cGM4Rrw6cVQ:APA91bHj-hbR2ZAeoQQqWcX2Ej8Bk2FhnKWsgCPs4-UJ8CSmiQHgPMzHYofhA5X3eqtXefD4JUGEkw_v9UZvxt3UZM7pOgW1bIE37vV-OvbbvJ8kAcsfOjjNc39nTdTItjYR2YZ7hALm",
+        registration_id="eBFECJ5vSvU:APA91bHYp4xgJt3ea8gSmCjpnhj4OuBmChtDSz8GK38o3xkuTcUWOgTeyUE7amJhv8LrCNoRQLZixIBlcoMs_eJg3Y0W9fVuI6gCnLvDENPWZ_vIfaYrE4QNjPjQeS9TnnlLepCLRt13",
         data_message=data_message)
     print(result)
     print(campaign, segment)

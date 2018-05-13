@@ -11,8 +11,6 @@ from apps.url_shortner.models import ShortenedUrl
 
 @api_view(['GET'])
 def dashboard_analytics(request, *args, **kwargs):
-    # import ipdb
-    # ipdb.set_trace()
     customer = Customer.objects.count()
     campaign = Campaign.objects.count()
     list = List.objects.count()
@@ -37,10 +35,7 @@ def chart_data(request, *args, **kwargs):
     camp_id = kwargs.get('camp_id')
     male_customers= ObjectViewed.objects.filter(campaign=camp_id, customer__add_fields__sex="male").count()
     female_customers= ObjectViewed.objects.filter(campaign=camp_id, customer__add_fields__sex="female").count()
-    # object = get_object_or_404(ObjectViewed, campaign=camp_id)
-    # object = ObjectViewed.objects.filter()
     return Response({
         'gender_data': [['male', male_customers], ['female',female_customers]]
     })
-    # import ipdb
-    # ipdb.set_trace()
+
