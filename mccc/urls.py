@@ -9,7 +9,6 @@ from apps.analytics.views import dashboard_analytics, chart_data
 from apps.send.api import send_push, send_sms, schedule_campaign, email_view
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
-from apps.tanks.api import grape_mail_load
 from apps.tanks.haystack_api import CustomerSearchView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
@@ -29,7 +28,6 @@ urlpatterns = [
     path('v1/', include(router.urls)),
     path('v1/rest-auth/', include('rest_auth.urls')),
     path('v1/dashboard', dashboard_analytics),
-    path('v1/campaigns/email/<int:pk>/', grape_mail_load),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
 
     path('v1/send/email', email_view),

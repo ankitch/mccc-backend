@@ -70,14 +70,6 @@ class SegmentViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['GET'])
-def grape_mail_load(request, *args, **kwargs):
-    id = kwargs.get('pk')
-    campaign = Campaign.objects.get(id=id)
-
-    return Response(campaign.emails)
-
-
-@api_view(['GET'])
 def segment(request, *args, **kwargs):
     campaign_id = kwargs.get('pk')
     segment_id = kwargs.get('segmentpk')
