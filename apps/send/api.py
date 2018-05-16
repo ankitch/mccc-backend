@@ -10,21 +10,20 @@ from mccc import settings
 
 
 def email_to_ses(query, lists, campaign):
-    ses_mail = None
+    mail = None
     search_results = perform_search(query, lists)
-    camp_email = Campaign.objects.get(pk=campaign).emails
-    camp_subj = Campaign.objects.get(pk=campaign).email_subject
-    camp_short = Campaign.objects.get(pk=campaign).short_url.short_code
+    email_template = Campaign.objects.get(pk=campaign).emails
+    email_subject = Campaign.objects.get(pk=campaign).email_subject
+    short_code = Campaign.objects.get(pk=campaign).short_url.short_code
+
     for items in search_results:
-        print(items.pk)
-        print(items.email)
-        send = camp_email.format(url='http://127.0.0.1:8000/s1/' + camp_short + '/' + items.pk + "/" + str(campaign))
-        ses_mail = send_mail(camp_subj,
+        send = email_template.format(url='http://127.0.0.1:8000/s1/' + short_code  + '/' + items.pk + "/" + str(campaign))
+        ses_mail = send_mail(email_subject,
                              send,
                              'from@example.com',
                              [items.email],
                              fail_silently=False, )
-    return ses_mail
+    return mail
 
 
 @api_view(['POST', 'GET'])
@@ -44,8 +43,6 @@ def send_email(query, lists, campaign_id):
     return Response(email)
 
 
-# TODO
-# to enable push notification by getting body
 def send_push_notification(query, lists, campaign):
     title_push = Campaign.objects.get(pk=campaign).push_title
     body_push = Campaign.objects.get(pk=campaign).push_body
@@ -57,9 +54,6 @@ def send_push_notification(query, lists, campaign):
     push_service = FCMNotification(
         api_key="AAAApd54CKA:APA91bHh60kTOjmJQP8qv8IcQtnkB3-uq-NZtmFGefneT3xlS5dfDEiPUVgjrOKVQdyamgTHn7vIfRvNI6I3vo6nwqW3KntsapmcJIFfJYfrs9a5bYT9VwaRMAVTb6Xzk0Wbm2L5ZEHT")
     result = push_service.notify_multiple_devices(fcm_ids,  body_push, title_push,)
-    print(result)
-    print(query, lists)
-    print(campaign)
     return result
 
 
@@ -136,8 +130,6 @@ def schedule_campaign(request, *args, **kwargs):
     elif channel == "Push":
         sch = schedule_email_push(push_func, query, lists, campaigns, next_run, sch_type, repeats, minutes)
 
-    # Todo
-    # trigger all
     elif channel == "All":
         sch = trigger_all(push_func, email_func, sms_func, campaigns, segments, query, lists, next_run, sch_type,
                           repeats, minutes)

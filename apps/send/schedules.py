@@ -2,6 +2,7 @@ from django_q.tasks import schedule
 
 
 def schedule_sms(trigger_func, campaign, segment, next_run, sch_type, repeats, minutes):
+    print("===== Scheduling SMS =====")
     if sch_type == 'O':
         sch = schedule(trigger_func,
                        campaign=campaign,
@@ -27,7 +28,6 @@ def schedule_sms(trigger_func, campaign, segment, next_run, sch_type, repeats, m
 
 
 # Schedule function for email and push notification
-
 def schedule_email_push(trigger_func, query, lists, campaigns, next_run, sch_type, repeats, minutes):
     print("===== Scheduling Email or push =====")
     if sch_type == 'O':
