@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.analytics.api import ObjectViewSet, AnalyticsViewSet
 from apps.analytics.views import dashboard_analytics, chart_data
-from apps.send.api import send_push, send_sms, schedule_campaign, email_view
+from apps.send.api import  send_sms, schedule_campaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
 from apps.tanks.haystack_api import CustomerSearchView

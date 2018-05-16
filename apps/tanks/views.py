@@ -61,8 +61,6 @@ def import_customers(request, pk):
                         dict_cus[attr] = val = ast.literal_eval(val)
                     else:
                         dict_cus[attr] = val
-                    print(type(val), index)
-                    print(val)
                 customer = Customer(**dict_cus)
                 customer.id = None
                 new_customers.append(customer)
