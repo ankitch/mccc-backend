@@ -44,7 +44,6 @@ class CampaignViewSet(viewsets.ModelViewSet):
     queryset = Campaign.objects.all().order_by('-id')
     serializer_class = CampaignSerializer
 
-    # todo change to post
     @detail_route(methods=['get'])
     def trigger(self, request, pk=None, format=None):
         campaign = get_object_or_404(Campaign, pk=pk)
@@ -74,12 +73,14 @@ def segment(request, *args, **kwargs):
     campaign_id = kwargs.get('pk')
     segment_id = kwargs.get('segmentpk')
 
-    get_template = Campaign.objects.get(pk=campaign_id).template
-    get_segment = Campaign.objects.get(pk=campaign_id).list.segments.get(pk=segment_id).query
-    get_lists = Campaign.objects.get(pk=campaign_id).list
-    phone_list = []
+    campaign = get_object_or_404(Campaign, pk=campaign_id)
+    get_segment = campaign.list.segments.get(pk=segment_id).query
 
-    search_result = perform_search(get_segment, get_lists)
+    phone_list = []
+    get_template = campaign.template.format(
+        url='http://192.168.0.122:8000/s/' + campaign.short_url.short_code + '/' + str(campaign_id))
+
+    search_result = perform_search(get_segment, campaign.list)
     for item in search_result:
         phone_list.append(item.phone)
 

@@ -43,7 +43,8 @@ urlpatterns = [
 
     path('v1/analytics/camp/<int:camp_id>/', ObjectViewSet.as_view()),
     path('v1/analytics/data/<int:camp_id>/', chart_data),
-    path('s1/<slug:shortcode>/<int:cus_id>/<int:camp_id>/', ShortRedirectView.as_view())
+    # path('s/<slug:shortcode>/<int:cus_id>/<int:camp_id>/', ShortRedirectView.as_view())
+    path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
 ]
 if settings.DEBUG:
     import debug_toolbar

@@ -15,7 +15,6 @@ def send_sms_fcm(campaign, segment, reg_id):
     }
     push_service = FCMNotification(
         api_key=settings.FCM_API_KEY_SEND)
-
     result = push_service.single_device_data_message(
         registration_id=reg_id,
         data_message=data_message)
@@ -29,7 +28,7 @@ def send_sms(request, *args, **kwargs):
         segment = request.data['segment']
         reg_id = User.objects.get(pk=request.user.id).fcm_reg_id
         send = send_sms_fcm(campaigns, segment, reg_id)
-        return Response(send)
+        return send
 
 
 def perform_search(query, lists):
