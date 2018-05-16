@@ -1,19 +1,13 @@
-import ipdb
 from django.core.paginator import Paginator
 from rest_framework import serializers
-from rest_framework.decorators import detail_route
-from rest_framework.response import Response
 
 from .models import Customer, List, Campaign, Segments, SettingConfig
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    # lists = serializers.RelatedField(many=True)
-
     class Meta:
         model = Customer
         fields = ('id', 'full_name', 'email', 'phone', 'lists', 'add_fields', 'created_at', 'updated_at')
-        # depth = 1
 
 
 class ListSerializer(serializers.ModelSerializer):
@@ -113,8 +107,6 @@ class CampaignSerializer(serializers.ModelSerializer):
 class CampaignDetailSerializer(serializers.ModelSerializer):
     customers = serializers.SerializerMethodField()
 
-    # segments = serializers.SerializerMethodField()
-
     def get_customers(self, obj):
         lst = []
         for customer in obj.list.customers.all():
@@ -127,10 +119,3 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campaign
         fields = ('id', 'name', 'customers', 'template')
-
-
-class CampaignEmailSerializer(serializers.ModelSerializer):
-    email = serializers.SerializerMethodField()
-
-    def get_email(self, obj):
-        print(obj)
