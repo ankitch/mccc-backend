@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, detail_route
 from rest_framework.response import Response
 
-from apps.send.api import perform_search
+from apps.send.utils import perform_search
 from .models import Customer, List, Campaign, Segments, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
@@ -26,10 +26,7 @@ class ListViewSet(viewsets.ModelViewSet):
         lis = Segments.objects.filter(lists=pk)
 
         for items in lis:
-            try:
-                segments.append(items.name)
-            except IndexError:
-                pass
+            segments.append(items.name)
 
         serializer = SegmentSerializer(lis, many=True).data
         return Response(serializer)
@@ -43,12 +40,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class CampaignViewSet(viewsets.ModelViewSet):
     queryset = Campaign.objects.all().order_by('-id')
     serializer_class = CampaignSerializer
-
-    @detail_route(methods=['get'])
-    def trigger(self, request, pk=None, format=None):
-        campaign = get_object_or_404(Campaign, pk=pk)
-        campaign.trigger()
-        return Response({})
 
     @detail_route(methods=['get'])
     def details(self, request, pk=None, format=None):
@@ -91,14 +82,14 @@ def segment(request, *args, **kwargs):
 def create_settings(request, *args, **kwargs):
     if request.method == 'GET':
         try:
-            sets = SettingConfig.objects.get(pk=1)
+            sets = SettingConfig.get_solo()
             return Response({'attributes': sets.attributes})
         except:
             return Response({'not found'})
 
     elif request.method == 'POST':
         data = request.data['attributes']
-        sets = SettingConfig.objects.get(pk=1)
+        sets = SettingConfig.get_solo()
         sets.attributes = data
         sets.save()
         return Response({'attributes': sets.attributes})
@@ -109,5 +100,4 @@ def create_list_segment(request, *args, **kwargs):
     list_id = request.data['list_id']
     segment_id = request.data['segments_id']
     create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
-    print(create)
     return Response({'segment': "created"})

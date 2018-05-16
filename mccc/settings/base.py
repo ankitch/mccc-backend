@@ -63,9 +63,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mccc.wsgi.application'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 30,
     'DEFAULT_FILTER_BACKENDS': (),
@@ -75,10 +75,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_WHITELIST = (
-    # 'localhost:8000',
     'localhost:8080',
     '127.0.0.1:8000'
-    # 'http://localhost:8080',
 )
 
 AUTH_PASSWORD_VALIDATORS = [

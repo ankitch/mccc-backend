@@ -4,8 +4,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
-from apps.analytics.api import ObjectViewSet, AnalyticsViewSet
-from apps.analytics.views import dashboard_analytics, chart_data
+from apps.analytics.api import dashboard_analytics
 from apps.send.api import  send_sms, schedule_campaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
@@ -22,7 +21,6 @@ router.register('campaigns', tank_api.CampaignViewSet)
 router.register('segments', tank_api.SegmentViewSet)
 router.register('shortenedurl', ShortenedUrlViewSet)
 router.register('customer/search', CustomerSearchView, base_name='customer-search')
-router.register('analytics', AnalyticsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,8 +39,6 @@ urlpatterns = [
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
     path('v1/settings/', tank_api.create_settings, name="settings"),
 
-    path('v1/analytics/camp/<int:camp_id>/', ObjectViewSet.as_view()),
-    path('v1/analytics/data/<int:camp_id>/', chart_data),
     # path('s/<slug:shortcode>/<int:cus_id>/<int:camp_id>/', ShortRedirectView.as_view())
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
 ]

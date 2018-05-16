@@ -98,7 +98,8 @@ class CampaignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'details', 'list', 'short_url', 'created_at', 'updated_at', 'segments', 'template', 'list_name')
+        fields = (
+        'id', 'name', 'details', 'list', 'short_url', 'created_at', 'updated_at', 'segments', 'template', 'list_name')
 
     def get_lists_name(self, obj):
         return obj.list.name
@@ -110,10 +111,8 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
     def get_customers(self, obj):
         lst = []
         for customer in obj.list.customers.all():
-            try:
-                lst.append(customer.phone)
-            except IndexError:
-                pass
+            lst.append(customer.phone)
+
         return {'+977': lst}
 
     class Meta:
