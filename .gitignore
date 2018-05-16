@@ -5,4 +5,4 @@ __pycache__/
 .idea
 mccc/settings/env.py
 db.sqlite3
-
+.vscode
