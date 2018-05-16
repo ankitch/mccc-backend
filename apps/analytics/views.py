@@ -1,4 +1,3 @@
-# Create your views here.
 from django.shortcuts import get_object_or_404
 from django_q.models import Task
 from rest_framework.decorators import api_view
@@ -32,9 +31,9 @@ def dashboard_analytics(request, *args, **kwargs):
 
 @api_view(['GET'])
 def chart_data(request, *args, **kwargs):
-    camp_id = kwargs.get('camp_id')
-    male_customers= ObjectViewed.objects.filter(campaign=camp_id, customer__add_fields__sex="male").count()
-    female_customers= ObjectViewed.objects.filter(campaign=camp_id, customer__add_fields__sex="female").count()
+    campaign = kwargs.get('camp_id')
+    male_customers= ObjectViewed.objects.filter(campaign=campaign, customer__add_fields__sex="male").count()
+    female_customers= ObjectViewed.objects.filter(campaign=campaign, customer__add_fields__sex="female").count()
     return Response({
         'gender_data': [['male', male_customers], ['female',female_customers]]
     })

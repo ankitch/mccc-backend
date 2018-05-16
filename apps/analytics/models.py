@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 from apps.analytics.signals import url_viewed_signal
 from apps.tanks.models import Customer, Campaign
 from apps.url_shortner.models import ShortenedUrl
@@ -15,17 +13,6 @@ class ClickEventManager(models.Manager):
             return obj.count
         return None
 
-    # def add_person(self, instance):
-    #     if isinstance(instance, Customer):
-    #         print(instance)
-    #         import ipdb
-    #         ipdb.set_trace()
-    #         obj, created = self.get_or_create(customers=instance)
-    #         obj.save()
-    #         import ipdb
-    #         ipdb.set_trace()
-    #         return
-
 
 class ClickEvent(models.Model):
     customers = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
@@ -38,8 +25,6 @@ class ClickEvent(models.Model):
     def __str__(self):
         return "{i}".format(i=self.count)
 
-
-#
 
 class ObjectViewed(models.Model):
     customer = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
@@ -57,11 +42,6 @@ class ObjectViewed(models.Model):
 
 
 def url_viewed_receiver(sender, cus, short, camp, request, *args, **kwargs):
-    # import ipdb
-    # ipdb.set_trace()
-    # print(sender)
-    # print(cus.id)
-    # print(short.short_code)
     url_view = ObjectViewed(customer=cus, short_url=short, campaign=camp)
     url_view.save()
 
