@@ -107,7 +107,6 @@ def create_settings(request, *args, **kwargs):
 def create_list_segment(request, *args, **kwargs):
     list_id = request.data['list_id']
     segment_id = request.data['segments_id']
-    print(list_id, segment_id)
     create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
     print(create)
-    return Response({'create': "sads"})
+    return Response({'segment': "created"})

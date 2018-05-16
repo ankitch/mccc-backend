@@ -12,6 +12,7 @@ from apps.tanks import views as tank_views
 from apps.tanks.haystack_api import CustomerSearchView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
+from apps.users.views import get_fcm_reg_id
 
 router = DefaultRouter()
 
@@ -27,11 +28,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('v1/', include(router.urls)),
     path('v1/rest-auth/', include('rest_auth.urls')),
-    path('v1/dashboard', dashboard_analytics),
+    path('v1/dashboard/', dashboard_analytics),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
-
-    path('v1/send/email', email_view),
-    path('v1/send/push/', send_push),
+    path('v1/users/reg_id/', get_fcm_reg_id),
     path('v1/send/sms/', send_sms),
 
     path('v1/schedule/campaign/', schedule_campaign),
@@ -46,7 +45,6 @@ urlpatterns = [
     path('v1/analytics/data/<int:camp_id>/', chart_data),
     path('s1/<slug:shortcode>/<int:cus_id>/<int:camp_id>/', ShortRedirectView.as_view())
 ]
-
 if settings.DEBUG:
     import debug_toolbar
 

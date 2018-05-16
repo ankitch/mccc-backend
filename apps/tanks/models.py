@@ -37,8 +37,8 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
 
 
 class Campaign(models.Model):
@@ -52,6 +52,7 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class SettingConfig(SingletonModel):
     attributes = JSONField(null=True)
@@ -80,5 +81,5 @@ class SegmentList(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.segments)
 
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
