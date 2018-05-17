@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, detail_route
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.send.utils import perform_search
 from .models import Customer, List, Campaign, Segments, SettingConfig, SegmentList
@@ -59,35 +60,34 @@ class SegmentViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-@api_view(['GET'])
-def segment(request, *args, **kwargs):
-    campaign_id = kwargs.get('pk')
-    segment_id = kwargs.get('segmentpk')
+class GetMessage(APIView):
+    def get(self, request, format=None):
+        campaign_id = request.data.get('pk')
+        segment_id = request.data.get('segmentpk')
 
-    campaign = get_object_or_404(Campaign, pk=campaign_id)
-    get_segment = campaign.list.segments.get(pk=segment_id).query
+        campaign = get_object_or_404(Campaign, pk=campaign_id)
+        get_segment = campaign.list.segments.get(pk=segment_id).query
 
-    phone_list = []
-    get_template = campaign.template.format(
-        url='http://192.168.0.122:8000/s/' + campaign.short_url.short_code + '/' + str(campaign_id))
+        phone_list = []
+        get_template = campaign.template.format(
+            url='http://192.168.0.122:8000/s/' + campaign.short_url.short_code + '/' + str(campaign_id))
 
-    search_result = perform_search(get_segment, campaign.list)
-    for item in search_result:
-        phone_list.append(item.phone)
+        search_result = perform_search(get_segment, campaign.list)
+        for item in search_result:
+            phone_list.append(item.phone)
 
-    return Response({'customers': {'+977': phone_list}, 'template': get_template})
+        return Response({'customers': {'+977': phone_list}, 'template': get_template})
 
 
-@api_view(['GET', 'POST'])
-def create_settings(request, *args, **kwargs):
-    if request.method == 'GET':
+class Settings(APIView):
+    def get(self, request, format=None):
         try:
             sets = SettingConfig.get_solo()
             return Response({'attributes': sets.attributes})
         except:
             return Response({'not found'})
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         data = request.data['attributes']
         sets = SettingConfig.get_solo()
         sets.attributes = data
@@ -95,9 +95,12 @@ def create_settings(request, *args, **kwargs):
         return Response({'attributes': sets.attributes})
 
 
-@api_view(['POST'])
-def create_list_segment(request, *args, **kwargs):
-    list_id = request.data['list_id']
-    segment_id = request.data['segments_id']
-    create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
-    return Response({'segment': "created"})
+class AddSegment(APIView):
+    def get(self):
+        pass
+
+    def post(self, request, format=None):
+        list_id = request.data['list_id']
+        segment_id = request.data['segments_id']
+        create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
+        return Response({'segment': "created"})

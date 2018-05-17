@@ -1,17 +1,18 @@
 from django.conf import settings
 from django.conf.urls import include
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.analytics.api import dashboard_analytics
-from apps.send.api import  send_sms, schedule_campaign
+from apps.analytics.api import DashboardAnalytics
+from apps.send.api import SendSMS, ScheduleCampaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
+from apps.tanks.api import Settings, GetMessage, AddSegment
 from apps.tanks.haystack_api import CustomerSearchView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
-from apps.users.views import get_fcm_reg_id
+from apps.users.views import FCMDeviceRegistration
 
 router = DefaultRouter()
 
@@ -20,26 +21,27 @@ router.register('lists', tank_api.ListViewSet)
 router.register('campaigns', tank_api.CampaignViewSet)
 router.register('segments', tank_api.SegmentViewSet)
 router.register('shortenedurl', ShortenedUrlViewSet)
-router.register('customer/search', CustomerSearchView, base_name='customer-search')
+router.register('customer/search', CustomerSearchView, base_name='customer_search')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('v1/', include(router.urls)),
     path('v1/rest-auth/', include('rest_auth.urls')),
-    path('v1/dashboard/', dashboard_analytics),
+    path('v1/dashboard/', DashboardAnalytics.as_view()),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
-    path('v1/users/reg_id/', get_fcm_reg_id),
-    path('v1/send/sms/', send_sms),
+    path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
+    path('v1/send/sms/', SendSMS.as_view()),
 
-    path('v1/schedule/campaign/', schedule_campaign),
+    path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
 
-    path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export-customers'),
+    path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export_customers'),
+
     path('v1/lists/<int:pk>/import/customers/', tank_views.import_customers, name='import_customers'),
-    path('v1/lists/segments/create/', tank_api.create_list_segment, name='list_segment'),
-    path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', tank_api.segment, name='segment-customers'),
-    path('v1/settings/', tank_api.create_settings, name="settings"),
 
-    # path('s/<slug:shortcode>/<int:cus_id>/<int:camp_id>/', ShortRedirectView.as_view())
+    path('v1/lists/segments/create/', AddSegment.as_view()),
+    path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', GetMessage.as_view()),
+
+    path('v1/settings/', Settings.as_view()),
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
 ]
 if settings.DEBUG:
