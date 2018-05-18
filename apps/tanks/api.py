@@ -61,18 +61,20 @@ class SegmentViewSet(viewsets.ModelViewSet):
 
 
 class GetMessage(APIView):
-    def get(self, request, format=None):
-        campaign_id = request.data.get('pk')
-        segment_id = request.data.get('segmentpk')
+    def get(self, request, format=None, *args, **kwargs):
+        campaign_id = kwargs.get('pk')
+        segment_id = kwargs.get('segmentpk')
 
         campaign = get_object_or_404(Campaign, pk=campaign_id)
-        get_segment = campaign.list.segments.get(pk=segment_id).query
+        get_segment_query = campaign.list.segments.get(pk=segment_id).query
 
         phone_list = []
         get_template = campaign.template.format(
-            url='http://192.168.0.122:8000/s/' + campaign.short_url.short_code + '/' + str(campaign_id))
+            url='https://' + request.get_host()
+            if request.is_secure()
+            else 'http://' + request.get_host() + '/s/' + campaign.short_url.short_code + '/' + str(campaign_id))
+        search_result = perform_search(get_segment_query, campaign.list)
 
-        search_result = perform_search(get_segment, campaign.list)
         for item in search_result:
             phone_list.append(item.phone)
 
@@ -96,9 +98,6 @@ class Settings(APIView):
 
 
 class AddSegment(APIView):
-    def get(self):
-        pass
-
     def post(self, request, format=None):
         list_id = request.data['list_id']
         segment_id = request.data['segments_id']

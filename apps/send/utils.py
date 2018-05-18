@@ -4,7 +4,7 @@ from pyfcm import FCMNotification
 from mccc import settings
 
 
-def send_sms_fcm(campaign, segment, reg_id):
+def send_sms_fcm(campaign, segment, fcm_registration_id):
     data_message = {
         'campaign': campaign,
         'segment': segment,
@@ -12,7 +12,7 @@ def send_sms_fcm(campaign, segment, reg_id):
     push_service = FCMNotification(
         api_key=settings.FCM_API_KEY_SEND)
     result = push_service.single_device_data_message(
-        registration_id=reg_id,
+        registration_id=fcm_registration_id,
         data_message=data_message)
     return result
 
