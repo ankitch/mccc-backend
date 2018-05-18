@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
@@ -22,13 +21,7 @@ class ListViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['get'])
     def segment(self, request, pk=None, format=None):
-
-        segments = []
         lis = Segments.objects.filter(lists=pk)
-
-        for items in lis:
-            segments.append(items.name)
-
         serializer = SegmentSerializer(lis, many=True).data
         return Response(serializer)
 
@@ -71,8 +64,9 @@ class GetMessage(APIView):
         phone_list = []
         get_template = campaign.template.format(
             url='https://' + request.get_host()
-            if request.is_secure()
-            else 'http://' + request.get_host() + '/s/' + campaign.short_url.short_code + '/' + str(campaign_id))
+            if request.is_secure() else 'http://' + request.get_host() + '/s/' + campaign.short_url.short_code + '/' + str(
+                campaign_id))
+
         search_result = perform_search(get_segment_query, campaign.list)
 
         for item in search_result:

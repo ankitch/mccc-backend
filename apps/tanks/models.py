@@ -15,9 +15,9 @@ class List(models.Model):
 
 
 class Customer(models.Model):
-    full_name = models.CharField(max_length=255, blank=True, null=True)
+    full_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=255)
     fcm_id = models.CharField(max_length=300, blank=True, null=True, default=None)
     add_fields = JSONField()
     lists = models.ManyToManyField(List, related_name='customers', through='ListCustomer')
