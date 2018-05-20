@@ -5,15 +5,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.utils import perform_search
-from .models import Customer, List, Campaign, Segments, SettingConfig, SegmentList
+from .models import Customer, List, Campaign, Segment, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 
 
 class ListViewSet(viewsets.ModelViewSet):
-    queryset = List.objects.all().order_by('-id')
     serializer_class = ListSerializer
     detail_serializer_class = ListDetailSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return List.objects.filter(company=company).order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -22,19 +25,25 @@ class ListViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['get'])
     def segment(self, request, pk=None, format=None):
-        lis = Segments.objects.filter(lists=pk)
+        lis = Segment.objects.filter(lists=pk)
         serializer = SegmentSerializer(lis, many=True).data
         return Response(serializer)
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all().order_by('-id')
     serializer_class = CustomerSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return Customer.objects.filter(company=company).order_by('-id')
 
 
 class CampaignViewSet(viewsets.ModelViewSet):
-    queryset = Campaign.objects.all().order_by('-id')
     serializer_class = CampaignSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return Campaign.objects.filter(company=company).order_by('-id')
 
     @detail_route(methods=['get'])
     def details(self, request, pk=None, format=None):
@@ -44,9 +53,12 @@ class CampaignViewSet(viewsets.ModelViewSet):
 
 
 class SegmentViewSet(viewsets.ModelViewSet):
-    queryset = Segments.objects.all().order_by('-id')
     serializer_class = SegmentSerializer
     detail_serializer_class = SegmentDetailSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return Segment.objects.filter(company=company).order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'retrieve':

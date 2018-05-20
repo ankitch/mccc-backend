@@ -57,5 +57,37 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_superuser
 
+    @property
+    def all_roles(self):
+        return list(Role.objects.filter(user=self).select_related('company'))
+
     def __str__(self):
         return self.full_name
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=254)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Companies'
+
+
+ROLES = (
+    ('Staff', 'Staff'),
+    ('Admin', 'Admin'),
+)
+
+
+class Role(models.Model):
+    user = models.ForeignKey(User, related_name='roles', on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, related_name='roles', on_delete=models.CASCADE)
+    type = models.CharField(choices=ROLES, max_length=20, default='Staff')
+
+    def __str__(self):
+        return self.company.name + " || " + self.user.full_name + " || " + self.type
+
+    class Meta:
+        unique_together = ('user', 'company', 'type')

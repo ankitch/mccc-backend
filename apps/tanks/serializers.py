@@ -1,19 +1,27 @@
 from django.core.paginator import Paginator
 from rest_framework import serializers
 
-from .models import Customer, List, Campaign, Segments, SettingConfig
+from .models import Customer, List, Campaign, Segment, SettingConfig
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        validated_data['company'] = self.context['request'].company
+        return super().create(validated_data)
+
     class Meta:
         model = Customer
         fields = ('id', 'full_name', 'email', 'phone', 'lists', 'add_fields', 'created_at', 'updated_at')
 
 
 class ListSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        validated_data['company'] = self.context['request'].company
+        return super().create(validated_data)
+
     class Meta:
         model = List
-        fields = '__all__'
+        fields = ('id', 'name', 'created_at', 'updated_at')
 
 
 class SettingSerializer(serializers.ModelSerializer):
@@ -47,23 +55,31 @@ class ListDetailSerializer(serializers.ModelSerializer):
 
 
 class SegmentSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        validated_data['company'] = self.context['request'].company
+        return super().create(validated_data)
+
     class Meta:
-        model = Segments
+        model = Segment
         fields = ('id', 'name', 'query', 'created_at', 'updated_at')
 
 
 class SegmentDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Segments
+        model = Segment
         fields = ('id', 'name', 'query')
 
 
 class CampaignSerializer(serializers.ModelSerializer):
     segments = serializers.SerializerMethodField()
 
+    def create(self, validated_data):
+        validated_data['company'] = self.context['request'].company
+        return super().create(validated_data)
+
     def get_segments(self, obj):
         page_size = 50
-        paginator = Paginator(Segments.objects.filter(lists=obj.list).all(), page_size)
+        paginator = Paginator(Segment.objects.filter(lists=obj.list).all(), page_size)
         object_list = paginator.page(1)
         serializer = SegmentSerializer(object_list, many=True)
         count = object_list.paginator.count

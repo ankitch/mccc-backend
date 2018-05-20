@@ -38,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.users.middleware.RoleMiddleware',
 ]
 
 ROOT_URLCONF = 'mccc.urls'
@@ -64,7 +65,7 @@ WSGI_APPLICATION = 'mccc.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 30,
@@ -94,6 +95,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+from .auth_settings import *
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kathmandu'
@@ -132,4 +135,3 @@ FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
 SHORTCODE_MAX = 15
 SHORTCODE_MIN = 4
 
-from .auth_settings import *

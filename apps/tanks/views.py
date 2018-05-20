@@ -57,10 +57,14 @@ def import_customers(request, pk):
                 dict_cus = {}
                 for index, val in enumerate(item):
                     attr = map_dict[index]
+
                     if index == 3:
                         dict_cus[attr] = val = ast.literal_eval(val)
                     else:
                         dict_cus[attr] = val
+                dict_cus['company_id'] = request.company.id
+                # import ipdb
+                # ipdb.set_trace()
                 customer = Customer(**dict_cus)
                 customer.id = None
                 new_customers.append(customer)

@@ -16,11 +16,11 @@ from apps.users.views import FCMDeviceRegistration
 
 router = DefaultRouter()
 
-router.register('customers', tank_api.CustomerViewSet)
-router.register('lists', tank_api.ListViewSet)
-router.register('campaigns', tank_api.CampaignViewSet)
-router.register('segments', tank_api.SegmentViewSet)
-router.register('shortenedurl', ShortenedUrlViewSet)
+router.register('customers', tank_api.CustomerViewSet, base_name='customers')
+router.register('lists', tank_api.ListViewSet, base_name='lists')
+router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
+router.register('segments', tank_api.SegmentViewSet, base_name='segment')
+router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
 router.register('customer/search', CustomerSearchView, base_name='customer_search')
 
 urlpatterns = [
