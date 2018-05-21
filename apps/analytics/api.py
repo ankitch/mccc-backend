@@ -5,17 +5,17 @@ from rest_framework.views import APIView
 
 from apps.analytics.models import ClickEvent
 from apps.tanks.models import Customer, Campaign, List
-from apps.url_shortner.models import ShortenedUrl
+from apps.url_shortner.models import ShortenedUrl   
 
 
 class DashboardAnalytics(APIView):
     def get(self, request, format=None):
-        customer_count = Customer.objects.count()
-        campaign_count = Campaign.objects.count()
-        list_count = List.objects.count()
+        customer_count = Customer.objects.filter(company=request.company).count()
+        campaign_count = Campaign.objects.filter(company=request.company).count()
+        list_count = List.objects.filter(company=request.company).count()
         total_url_short = ShortenedUrl.objects.count()
         click_event = ClickEvent.objects.aggregate(Sum('count'))
-        male_customers = Customer.objects.filter(add_fields__sex="male").count()
+        male_customers = Customer.objects.filter(add_fields__sex="male").filter(company=request.company).count()
         female_customers = Customer.objects.filter(add_fields__sex="female").count()
         failed_task = Task.objects.filter(success=False).count()
         success_task = Task.objects.filter(success=True).count()
