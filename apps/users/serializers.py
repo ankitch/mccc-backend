@@ -1,16 +1,10 @@
-from rest_framework import serializers
-
-from apps.users.models import User
+from allauth.account import app_settings as allauth_settings
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
-from allauth.account import app_settings as allauth_settings
-from allauth.utils import email_address_exists, get_username_max_length
+from allauth.utils import email_address_exists
+from rest_framework import serializers
 
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'email')
+from apps.users.models import User, Role, Company
 
 
 class CustomRegistrationSerializer(serializers.Serializer):
@@ -54,3 +48,31 @@ class CustomRegistrationSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ('id', 'name')
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+    active = serializers.SerializerMethodField()
+
+    def get_active(self, obj):
+        return self.active.id == obj.id if self.active else False
+
+    def __init__(self, *args, **kwargs):
+        self.active = kwargs.pop('active', None)
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Role
+        fields = ('id', 'type', 'company', 'active')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'full_name', 'email')

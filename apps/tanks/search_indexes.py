@@ -21,15 +21,7 @@ class CustomerIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_lists(self, obj):
         return [list.name for list in obj.lists.all()]
-
-    # adding data for full text search
-    # def prepare(self, obj):
-    #     data = super(CustomerIndex, self).prepare(obj)
-    #     # print(obj.email)
-    #     # data['add_fields'] = obj.add_fields
-    #     for key, value in obj.add_fields.items():
-    #         data[key] = value
-    #     return data
+    
 
     def get_model(self):
         return Customer

@@ -3,10 +3,12 @@ from django.db import models
 from solo.models import SingletonModel
 
 from apps.url_shortner.models import ShortenedUrl
+from apps.users.models import Company
 
 
 class List(models.Model):
     name = models.CharField(max_length=255)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='lists')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -15,23 +17,18 @@ class List(models.Model):
 
 
 class Customer(models.Model):
-    full_name = models.CharField(max_length=255, blank=True, null=True)
+    full_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=255)
     fcm_id = models.CharField(max_length=300, blank=True, null=True, default=None)
     add_fields = JSONField()
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='customers')
     lists = models.ManyToManyField(List, related_name='customers', through='ListCustomer')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.full_name
-
-    def json_leaves(self):
-        leaves = Leaf(self.add_fields)
-        # print(leaves.text)
-        return leaves.text
-        # return ''.join(text)
 
 
 class ListCustomer(models.Model):
@@ -42,7 +39,7 @@ class ListCustomer(models.Model):
 
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
-    #
+
     class Meta:
         auto_created = True
 
@@ -50,47 +47,15 @@ class ListCustomer(models.Model):
 class Campaign(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
+    template = models.TextField(blank=True, max_length=160)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
-    email_subject = models.TextField(blank=True, max_length=200)
-    emails = models.TextField(blank=True)
-    template = models.TextField(blank=True, max_length=160)
-    push_title = models.CharField(blank=True, max_length=30)
-    push_body = models.CharField(blank=True, max_length=30)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
-
-    #
-    # class Meta:
-    #     auto_created = True
-
-
-class Leaf(object):
-    def __init__(self, dictionary):
-        self.text = ''
-        self.rec(dictionary)
-
-    def rec(self, dic):
-        for key, value in dic.items():
-            if isinstance(value, dict):
-                self.rec(value)
-            elif isinstance(value, list):
-                self.recl(value)
-            else:
-                self.text += str(value) + ','
-
-    def recl(self, lis):
-        for item in lis:
-            if isinstance(item, list):
-                self.recl(item)
-            elif isinstance(item, dict):
-                self.rec(item)
-            else:
-                # print(item)
-                self.text += str(item) + ','
 
 
 class SettingConfig(SingletonModel):
@@ -100,10 +65,11 @@ class SettingConfig(SingletonModel):
         verbose_name = "Additional Fields"
 
 
-class Segments(models.Model):
+class Segment(models.Model):
     name = models.CharField(max_length=255)
     query = JSONField()
     lists = models.ManyToManyField(List, related_name='segments', through='SegmentList')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='segments')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -113,7 +79,7 @@ class Segments(models.Model):
 
 class SegmentList(models.Model):
     list = models.ForeignKey(List, on_delete=models.CASCADE)
-    segments = models.ForeignKey(Segments, on_delete=models.CASCADE)
+    segments = models.ForeignKey(Segment, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

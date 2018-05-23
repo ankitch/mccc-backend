@@ -13,7 +13,6 @@ class ShortenedUrlManager(models.Manager):
         return qs
 
     def refresh_shortcode(self, items=10):
-        print(items)
         qs = ShortenedUrl.objects.filter(id__gte=1)
         if items is not None and isinstance(items, int):
             qs = qs.order_by('-id')[:items]

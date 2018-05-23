@@ -5,7 +5,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.urls import reverse
 
-from .models import User
+from .models import User, Company, Role
 
 
 def url_to_edit_object(obj):
@@ -81,3 +81,5 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.unregister(Group)
+admin.site.register(Company)
+admin.site.register(Role)

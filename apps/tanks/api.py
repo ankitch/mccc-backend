@@ -1,18 +1,22 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, detail_route
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.send.api import perform_search
-from .models import Customer, List, Campaign, Segments, SettingConfig, SegmentList
+from apps.send.utils import perform_search
+from .models import Customer, List, Campaign, Segment, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
 
 
 class ListViewSet(viewsets.ModelViewSet):
-    queryset = List.objects.all().order_by('-id')
     serializer_class = ListSerializer
     detail_serializer_class = ListDetailSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return List.objects.filter(company=company).order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -21,35 +25,25 @@ class ListViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['get'])
     def segment(self, request, pk=None, format=None):
-
-        segments = []
-        lis = Segments.objects.filter(lists=pk)
-
-        for items in lis:
-            try:
-                segments.append(items.name)
-            except IndexError:
-                pass
-
+        lis = Segment.objects.filter(lists=pk)
         serializer = SegmentSerializer(lis, many=True).data
         return Response(serializer)
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all().order_by('-id')
     serializer_class = CustomerSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return Customer.objects.filter(company=company).order_by('-id')
 
 
 class CampaignViewSet(viewsets.ModelViewSet):
-    queryset = Campaign.objects.all().order_by('-id')
     serializer_class = CampaignSerializer
 
-    # todo change to post
-    @detail_route(methods=['get'])
-    def trigger(self, request, pk=None, format=None):
-        campaign = get_object_or_404(Campaign, pk=pk)
-        campaign.trigger()
-        return Response({})
+    def get_queryset(self):
+        company = self.request.company
+        return Campaign.objects.filter(company=company).order_by('-id')
 
     @detail_route(methods=['get'])
     def details(self, request, pk=None, format=None):
@@ -59,9 +53,12 @@ class CampaignViewSet(viewsets.ModelViewSet):
 
 
 class SegmentViewSet(viewsets.ModelViewSet):
-    queryset = Segments.objects.all().order_by('-id')
     serializer_class = SegmentSerializer
     detail_serializer_class = SegmentDetailSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return Segment.objects.filter(company=company).order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -69,53 +66,47 @@ class SegmentViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-@api_view(['GET'])
-def grape_mail_load(request, *args, **kwargs):
-    id = kwargs.get('pk')
-    campaign = Campaign.objects.get(id=id)
+class GetMessage(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+        campaign_id = kwargs.get('pk')
+        segment_id = kwargs.get('segmentpk')
 
-    return Response(campaign.emails)
+        campaign = get_object_or_404(Campaign, pk=campaign_id)
+        get_segment_query = campaign.list.segments.get(pk=segment_id).query
 
+        phone_list = []
+        get_template = campaign.template.format(
+            url='https://' + request.get_host()
+            if request.is_secure() else 'http://' + request.get_host() + '/s/' + campaign.short_url.short_code + '/' + str(
+                campaign_id))
 
-@api_view(['GET'])
-def segment(request, *args, **kwargs):
-    campaign_id = kwargs.get('pk')
-    segment_id = kwargs.get('segmentpk')
+        search_result = perform_search(get_segment_query, campaign.list)
 
-    get_template = Campaign.objects.get(pk=campaign_id).template
-    get_segment = Campaign.objects.get(pk=campaign_id).list.segments.get(pk=segment_id).query
-    get_lists = Campaign.objects.get(pk=campaign_id).list
-    phone_list = []
+        for item in search_result:
+            phone_list.append(item.phone)
 
-    search_result = perform_search(get_segment, get_lists)
-    for item in search_result:
-        phone_list.append(item.phone)
-
-    return Response({'customers': {'+977': phone_list}, 'template': get_template})
+        return Response({'customers': {'+977': phone_list}, 'template': get_template})
 
 
-@api_view(['GET', 'POST'])
-def create_settings(request, *args, **kwargs):
-    if request.method == 'GET':
+class Settings(APIView):
+    def get(self, request, format=None):
         try:
-            sets = SettingConfig.objects.get(pk=1)
+            sets = SettingConfig.get_solo()
             return Response({'attributes': sets.attributes})
         except:
             return Response({'not found'})
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         data = request.data['attributes']
-        sets = SettingConfig.objects.get(pk=1)
+        sets = SettingConfig.get_solo()
         sets.attributes = data
         sets.save()
         return Response({'attributes': sets.attributes})
 
 
-@api_view(['POST'])
-def create_list_segment(request, *args, **kwargs):
-    list_id = request.data['list_id']
-    segment_id = request.data['segments_id']
-    print(list_id, segment_id)
-    create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
-    print(create)
-    return Response({'create': "sads"})
+class AddSegment(APIView):
+    def post(self, request, format=None):
+        list_id = request.data['list_id']
+        segment_id = request.data['segments_id']
+        create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
+        return Response({'segment': "created"})
