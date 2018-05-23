@@ -42,7 +42,7 @@ Download install redis from package manager.
 ```
 
 ### 5. Start Workers
-Go to project folder.
+Go to **project folder**.
 
 ```
 source env/bin/activate
