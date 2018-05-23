@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from apps.analytics.models import ClickEvent
 from apps.tanks.models import Customer, Campaign, List
-from apps.url_shortner.models import ShortenedUrl   
+from apps.url_shortner.models import ShortenedUrl
 
 
 class DashboardAnalytics(APIView):
