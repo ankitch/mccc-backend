@@ -5,10 +5,12 @@
 ### 1. Install
 
 ```
+mkdir project
+cd project
 virtualenv -p python3 env # create a virtual environment
 source env/bin/activate # Enter the virtual environment
 git clone git@github.com:ankitch/mccc-backend.git app # git clone the repo
-cd app # cd to project dir
+cd app # cd to app dir
 pip install -r requirements/dev.txt # install Python packages required for development
 cp mccc/settings/env.sample.py mccc/settings/env.py # create local settings file from sample file
 vi mccc/settings/env.py # configure your settings here, database, static & media paths and urls
@@ -21,14 +23,14 @@ vi mccc/settings/env.py # configure your settings here, database, static & media
 ```
 
 ### 3. Elastic and Redis Installation
-
+#### Open new terminal window.
 Download and install elasticsearch version **2.4.1** dependant on java
 
 ```
 curl -L -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.1/elasticsearch-2.4.1.tar.gz
 tar -xvf elasticsearch-2.4.1.tar.gz
 cd elasticsearch-2.4.1/bin
-./elasticsearch
+./elasticsearch -d
 ```
 
 ### 4. Redis Installation
@@ -40,8 +42,11 @@ Download install redis from package manager.
 ```
 
 ### 5. Start Workers
+Go to project folder.
 
 ```
+source env/bin/activate
+cd app/
 ./manage.py qcluster
 ```
 
