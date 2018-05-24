@@ -22,9 +22,8 @@ vi mccc/settings/env.py # configure your settings here, database, static & media
 ./manage.py runserver
 ```
 
-### 3. Elastic and Redis Installation
-#### Open new terminal window.
-Download and install elasticsearch version **2.4.1** dependant on java
+### 3. Elastic Installation
+Download and install Elasticsearch version **2.4.1**, dependent on Java.
 
 ```
 curl -L -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.1/elasticsearch-2.4.1.tar.gz
@@ -52,3 +51,4 @@ cd app/
 
 django admin running at [localhost:8000](http://localhost:8000/admin/)
 
+For deployment in production environment, visit [https://motorscript.com/django-deployment-cheatsheet/](https://motorscript.com/django-deployment-cheatsheet/)
