@@ -9,7 +9,7 @@ mkdir project
 cd project
 virtualenv -p python3 env # create a virtual environment
 source env/bin/activate # Enter the virtual environment
-git clone git@github.com:ankitch/mccc-backend.git app # git clone the repo
+git clone git@gitlab.com:awecode/sendtank-backend.git # git clone the repo
 cd app # cd to app dir
 pip install -r requirements/dev.txt # install Python packages required for development
 cp mccc/settings/env.sample.py mccc/settings/env.py # create local settings file from sample file
