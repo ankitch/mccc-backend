@@ -40,8 +40,8 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    # class Meta:
-    #     auto_created = True
+    class Meta:
+        auto_created = True
 
 
 class Campaign(models.Model):
@@ -86,5 +86,5 @@ class SegmentList(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.segments)
 
-    # class Meta:
-    #     auto_created = True
+        class Meta:
+            auto_created = True

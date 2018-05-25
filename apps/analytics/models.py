@@ -1,4 +1,7 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
+from apps.tanks.models import Campaign
 from apps.url_shortner.models import ShortenedUrl
 
 
@@ -21,3 +24,12 @@ class ClickEvent(models.Model):
 
     def __str__(self):
         return "{i}".format(i=self.count)
+
+
+class SMSAnalytics(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+    sent = ArrayField(models.CharField(max_length=100, null=True), blank=True)
+    delivered = ArrayField(models.CharField(max_length=100, null=True), blank=True)
+
+    def __str__(self):
+        return self.campaign.name

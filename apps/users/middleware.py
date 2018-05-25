@@ -23,13 +23,12 @@ class RoleMiddleware(object):
             user_id = api_settings.JWT_PAYLOAD_GET_USER_ID_HANDLER(payload)
             try:
                 request.user = User.objects.get(pk=user_id)
+                print(request.user)
             except User.DoesNotExist:
                 pass
 
         role = None
         role_obj = None
-        # import ipdb
-        # ipdb.set_trace()
         if request.user.is_authenticated:
             roles = request.user.all_roles
             try:

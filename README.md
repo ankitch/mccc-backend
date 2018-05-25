@@ -12,8 +12,8 @@ source env/bin/activate # Enter the virtual environment
 git clone git@gitlab.com:awecode/sendtank-backend.git # git clone the repo
 cd app # cd to app dir
 pip install -r requirements/dev.txt # install Python packages required for development
-cp mccc/settings/env.sample.py mccc/settings/env.py # create local settings file from sample file
-vi mccc/settings/env.py # configure your settings here, database, static & media paths and urls
+cp sendtank/settings/env.sample.py sendtank/settings/env.py # create local settings file from sample file
+vi sendtank/settings/env.py # configure your settings here, database, static & media paths and urls
 ./manage.py migrate # synchronize database and run migrations
 ```
 

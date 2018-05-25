@@ -1,9 +1,11 @@
 from django.db.models import Sum
 from django_q.models import Task
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.analytics.models import ClickEvent
+from apps.analytics.models import ClickEvent, SMSAnalytics
+from apps.analytics.serializers import SMSAnalyticsSerializers
 from apps.tanks.models import Customer, Campaign, List
 from apps.url_shortner.models import ShortenedUrl
 
@@ -27,3 +29,13 @@ class DashboardAnalytics(APIView):
                          'task': [['failed', failed_task], ['success', success_task]],
                          'total_url_short': total_url_short,
                          'total_object_viewed': click_event.get('count__sum')})
+
+
+class ReceiveAnalytics(APIView):
+    def post(self):
+        pass
+
+
+class SMSAnalyticsViewSet(APIView):
+    queryset = SMSAnalytics.objects.all()
+    serializer_class = SMSAnalyticsSerializers

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.analytics.api import DashboardAnalytics
+from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet
 from apps.send.api import SendSMS, ScheduleCampaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
@@ -21,6 +21,7 @@ router.register('lists', tank_api.ListViewSet, base_name='lists')
 router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
 router.register('segments', tank_api.SegmentViewSet, base_name='segment')
 router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
+router.register('sms/analytics', SMSAnalyticsViewSet, base_name='sms_analytics')
 router.register('customer/search', CustomerSearchView, base_name='customer_search')
 
 urlpatterns = [
@@ -31,6 +32,7 @@ urlpatterns = [
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
     path('v1/send/sms/', SendSMS.as_view()),
+    # path('v1/campaign/analytics/', ReceiveAnalytics.as_view()),
 
     path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
 
