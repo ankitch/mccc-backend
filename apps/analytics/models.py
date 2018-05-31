@@ -30,6 +30,11 @@ class SMSAnalytics(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
     sent = ArrayField(models.CharField(max_length=100, null=True), blank=True)
     delivered = ArrayField(models.CharField(max_length=100, null=True), blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        return self.campaign.name
+
+    @property
+    def campaign_name(self):
         return self.campaign.name

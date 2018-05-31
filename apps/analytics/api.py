@@ -31,11 +31,16 @@ class DashboardAnalytics(APIView):
                          'total_object_viewed': click_event.get('count__sum')})
 
 
-class ReceiveAnalytics(APIView):
-    def post(self):
-        pass
+class CreateListMixin:
+    """Allows bulk creation of a resource."""
+
+    def get_serializer(self, *args, **kwargs):
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+
+        return super().get_serializer(*args, **kwargs)
 
 
-class SMSAnalyticsViewSet(APIView):
+class SMSAnalyticsViewSet(CreateListMixin, viewsets.ModelViewSet):
     queryset = SMSAnalytics.objects.all()
     serializer_class = SMSAnalyticsSerializers

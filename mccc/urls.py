@@ -32,7 +32,6 @@ urlpatterns = [
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
     path('v1/send/sms/', SendSMS.as_view()),
-    # path('v1/campaign/analytics/', ReceiveAnalytics.as_view()),
 
     path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
 
