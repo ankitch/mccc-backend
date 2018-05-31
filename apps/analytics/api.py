@@ -1,6 +1,6 @@
 from django.db.models import Sum
 from django_q.models import Task
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -44,3 +44,11 @@ class CreateListMixin:
 class SMSAnalyticsViewSet(CreateListMixin, viewsets.ModelViewSet):
     queryset = SMSAnalytics.objects.all()
     serializer_class = SMSAnalyticsSerializers
+
+
+class CampaignAnalytics(generics.ListAPIView):
+    serializer_class = SMSAnalyticsSerializers
+
+    def get_queryset(self):
+        campaign = self.kwargs['campaign_id']
+        return SMSAnalytics.objects.filter(campaign=campaign)

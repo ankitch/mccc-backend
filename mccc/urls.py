@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet
+from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, CampaignAnalytics
 from apps.send.api import SendSMS, ScheduleCampaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
@@ -41,6 +41,8 @@ urlpatterns = [
 
     path('v1/lists/segments/create/', AddSegment.as_view()),
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', GetMessage.as_view()),
+
+    path('v1/camp/analytics/<int:campaign_id>/',CampaignAnalytics.as_view()),
 
     path('v1/settings/', Settings.as_view()),
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
