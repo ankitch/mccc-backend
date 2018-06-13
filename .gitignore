@@ -6,3 +6,4 @@ __pycache__/
 mccc/settings/env.py
 db.sqlite3
 .vscode
+campaign_email_templates

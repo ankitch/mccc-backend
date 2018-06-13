@@ -102,7 +102,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         model = Campaign
         fields = (
             'id', 'name', 'details', 'list', 'short_url', 'created_at', 'updated_at', 'segments', 'sms_template',
-            'list_name')
+            'list_name', 'email_template')
 
 
 class CampaignDetailSerializer(serializers.ModelSerializer):

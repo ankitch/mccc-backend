@@ -8,7 +8,7 @@ from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, Campaign
 from apps.send.api import SendSMS, ScheduleCampaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
-from apps.tanks.api import Settings, GetMessage, AddSegment
+from apps.tanks.api import Settings, GetMessage, AddSegment, Save
 from apps.tanks.haystack_api import CustomerSearchView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
@@ -43,7 +43,7 @@ urlpatterns = [
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', GetMessage.as_view()),
 
     path('v1/camp/analytics/<int:campaign_id>/',CampaignAnalytics.as_view()),
-
+    path('v1/save/<int:campaign_id>/', Save.as_view()),
     path('v1/settings/', Settings.as_view()),
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
 ]

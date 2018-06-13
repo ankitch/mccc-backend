@@ -1,3 +1,4 @@
+from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
@@ -110,3 +111,26 @@ class AddSegment(APIView):
         segment_id = request.data['segments_id']
         create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
         return Response({'segment': "created"})
+
+class Save(APIView):
+    def get(self, request, campaign_id, format=None):
+        file_path = Campaign.objects.get(pk=campaign_id).email_template.path
+        email_template = ""
+        file = open(file_path, "r").readlines()
+        for item in file:
+            email_template += item
+        return Response({email_template})
+
+    def post(self, request, campaign_id, format=None):
+        obj = Campaign.objects.get(pk=campaign_id)
+        saved_data = None
+        print(obj.email_template)
+        if (obj.email_template):
+            file = open(str(obj.email_template), "w+")
+            file.write(request.data['data'])
+            saved_data = file.close()
+        else:
+            saved_data = obj.email_template.save(str(request.company) + "__" + str(obj.name) +
+                                                 ".html", ContentFile(request.data['data']))
+
+        return Response({saved_data})
