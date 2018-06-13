@@ -75,7 +75,7 @@ class GetMessage(APIView):
         get_segment_query = campaign.list.segments.get(pk=segment_id).query
 
         phone_list = []
-        get_template = campaign.template.format(
+        get_template = campaign.sms_template.format(
             url='https://' + request.get_host()
             if request.is_secure() else 'http://' + request.get_host() + '/s/' + campaign.short_url.short_code + '/' + str(
                 campaign_id))
