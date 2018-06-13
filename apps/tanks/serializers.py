@@ -117,4 +117,4 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Campaign
-        fields = ('id', 'name', 'customers', 'template')
+        fields = ('id', 'name', 'customers', 'sms_template')

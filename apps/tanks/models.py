@@ -40,14 +40,14 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
 
 
 class Campaign(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
-    template = models.TextField(blank=True, max_length=160)
+    sms_template = models.TextField(blank=True, max_length=160)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -86,5 +86,5 @@ class SegmentList(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.segments)
 
-        class Meta:
-            auto_created = True
+    # class Meta:
+    #     auto_created = True
