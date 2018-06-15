@@ -1,3 +1,5 @@
+import os
+
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
@@ -6,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.utils import perform_search
+from mccc import settings
+from mccc.settings import MEDIA_ROOT
 from .models import Customer, List, Campaign, Segment, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
@@ -112,9 +116,11 @@ class AddSegment(APIView):
         create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
         return Response({'segment': "created"})
 
+
 class Save(APIView):
     def get(self, request, campaign_id, format=None):
         file_path = Campaign.objects.get(pk=campaign_id).email_template.path
+        print(file_path)
         email_template = ""
         file = open(file_path, "r").readlines()
         for item in file:
@@ -124,9 +130,10 @@ class Save(APIView):
     def post(self, request, campaign_id, format=None):
         obj = Campaign.objects.get(pk=campaign_id)
         saved_data = None
-        print(obj.email_template)
+        file_path = os.path.join(settings.MEDIA_ROOT, str(obj.email_template))
+
         if (obj.email_template):
-            file = open(str(obj.email_template), "w+")
+            file = open(file_path, "w+")
             file.write(request.data['data'])
             saved_data = file.close()
         else:

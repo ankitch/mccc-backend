@@ -4,6 +4,7 @@ from solo.models import SingletonModel
 
 from apps.url_shortner.models import ShortenedUrl
 from apps.users.models import Company
+from mccc.settings import MEDIA_ROOT
 
 
 class List(models.Model):
@@ -48,7 +49,7 @@ class Campaign(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
     sms_template = models.TextField(blank=True, max_length=160)
-    email_template = models.FileField(upload_to="campaign_email_templates/", blank=True, null=True)
+    email_template = models.FileField(upload_to='campaign_template/', blank=True, null=True)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
