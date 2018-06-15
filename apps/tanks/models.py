@@ -49,6 +49,7 @@ class Campaign(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
     sms_template = models.TextField(blank=True, max_length=160)
+    email_subject = models.CharField(max_length=255, blank=True, null=True)
     email_template = models.FileField(upload_to='campaign_template/', blank=True, null=True)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)

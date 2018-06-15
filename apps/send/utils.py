@@ -1,8 +1,13 @@
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
+from django_q.tasks import async
 from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
 from pyfcm.errors import InvalidDataError
-
+from apps.tanks.models import Campaign
 from mccc import settings
+from mccc.settings import TEMPLATES
 
 
 def send_sms_fcm(campaign, segment, fcm_registration_id):
@@ -20,6 +25,31 @@ def send_sms_fcm(campaign, segment, fcm_registration_id):
     except InvalidDataError:
         raise
     return result
+
+
+def email_to_ses(query, lists, campaign):
+    ses_mail = None
+    search_results = perform_search(query, lists)
+    campaign = get_object_or_404(Campaign, pk=campaign)
+    camp_email = campaign.email_template
+    camp_subj = campaign.email_subject
+    camp_short = campaign.short_url.short_code
+    emails = []
+    ctx = {
+        'user': 'buddy',
+        'purchase': 'Books'
+    }
+    for items in search_results:
+        emails.append(items.email)
+
+    file_path = campaign.email_template.path
+    with open(file_path) as f: email_message = f.read()
+    print(email_message)
+    message = EmailMultiAlternatives(subject=camp_subj, body=email_message, from_email=settings.EMAIL_HOST_USER, to=emails)
+    email_template = get_template(camp_email).render(ctx)
+    message.attach_alternative(email_template, "text/html")
+    async(message.send())
+    return ses_mail
 
 
 def perform_search(query, lists):

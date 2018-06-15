@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.conf.urls import include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, CampaignAnalytics
-from apps.send.api import SendSMS, ScheduleCampaign
+from apps.send.api import SendSMS, ScheduleCampaign, SendEmail
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
 from apps.tanks.api import Settings, GetMessage, AddSegment, Save
@@ -31,8 +32,9 @@ urlpatterns = [
     path('v1/dashboard/', DashboardAnalytics.as_view()),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
-    path('v1/send/sms/', SendSMS.as_view()),
 
+    path('v1/send/sms/', SendSMS.as_view()),
+    path('v1/send/email/', SendEmail.as_view()),
     path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
 
     path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export_customers'),
@@ -46,8 +48,11 @@ urlpatterns = [
     path('v1/save/<int:campaign_id>/', Save.as_view()),
     path('v1/settings/', Settings.as_view()),
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
+
 ]
 if settings.DEBUG:
     import debug_toolbar
 
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)
     urlpatterns = [path('debug', include(debug_toolbar.urls)), ] + urlpatterns

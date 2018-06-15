@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.schedules import schedule_sms
-from apps.send.utils import send_sms_fcm
+from apps.send.utils import send_sms_fcm, email_to_ses
 from apps.users.models import User
 
 
@@ -13,6 +13,19 @@ class SendSMS(APIView):
         reg_id = User.objects.get(pk=request.user.id).fcm_reg_id
         send = send_sms_fcm(campaign, segment, reg_id)
         return Response(send)
+
+
+class SendEmail(APIView):
+    def post(self, request, format=None):
+        query = request.data['query']
+        lists = request.data['lists']
+        campaign_id = request.data['campaign_id']
+        return send_email(query, lists, campaign_id)
+
+
+def send_email(query, lists, campaign_id):
+    email = email_to_ses(query, lists, campaign_id)
+    return Response(email)
 
 
 class ScheduleCampaign(APIView):
@@ -31,6 +44,7 @@ class ScheduleCampaign(APIView):
         sms_func = 'apps.send.utils.py.send_sms_fcm'
 
         if channel == "SMS":
-            sch = schedule_sms(sms_func, campaigns, segments, fcm_registration_id, next_run, schedule_type, repeats, minutes)
+            sch = schedule_sms(sms_func, campaigns, segments, fcm_registration_id, next_run, schedule_type, repeats,
+                               minutes)
 
         return Response({'schedule': 'created'})

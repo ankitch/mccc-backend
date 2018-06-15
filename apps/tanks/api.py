@@ -120,11 +120,7 @@ class AddSegment(APIView):
 class Save(APIView):
     def get(self, request, campaign_id, format=None):
         file_path = Campaign.objects.get(pk=campaign_id).email_template.path
-        print(file_path)
-        email_template = ""
-        file = open(file_path, "r").readlines()
-        for item in file:
-            email_template += item
+        with open(file_path) as f: email_template = f.read()
         return Response({email_template})
 
     def post(self, request, campaign_id, format=None):

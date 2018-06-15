@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'haystack',
     'django_q',
+
     'apps.users',
     'apps.tanks',
     'apps.url_shortner',
@@ -24,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'solo.apps.SoloAppConfig'
+    'solo.apps.SoloAppConfig',
 ]
 
 SITE_ID = 1
@@ -46,7 +47,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, '..', '..', 'media')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
