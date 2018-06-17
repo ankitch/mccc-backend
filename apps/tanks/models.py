@@ -52,7 +52,7 @@ class Campaign(models.Model):
     email_subject = models.CharField(max_length=255, blank=True, null=True)
     email_template = models.FileField(upload_to='campaign_template/', blank=True, null=True)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
-    short_url = models.ForeignseKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
+    short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
