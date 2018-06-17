@@ -72,7 +72,11 @@ class GetMessage(APIView):
         segment_id = kwargs.get('segmentpk')
 
         campaign = get_object_or_404(Campaign, pk=campaign_id)
-        get_segment_query = campaign.list.segments.get(pk=segment_id).query
+        get_segment_query = {}
+
+        if segment_id != 0:
+            get_segment_query = campaign.list.segments.get(pk=segment_id).query
+
 
         phone_list = []
         get_template = campaign.sms_template.format(
