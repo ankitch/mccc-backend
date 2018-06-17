@@ -1,3 +1,4 @@
+from django_q.tasks import async
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -24,7 +25,7 @@ class SendEmail(APIView):
 
 
 def send_email(query, lists, campaign_id):
-    email = email_to_ses(query, lists, campaign_id)
+    email = async (email_to_ses(query, lists, campaign_id))
     return Response(email)
 
 

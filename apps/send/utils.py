@@ -35,20 +35,20 @@ def email_to_ses(query, lists, campaign):
     camp_subj = campaign.email_subject
     camp_short = campaign.short_url.short_code
     emails = []
-    ctx = {
-        'user': 'buddy',
-        'purchase': 'Books'
-    }
-    for items in search_results:
-        emails.append(items.email)
-
     file_path = campaign.email_template.path
     with open(file_path) as f: email_message = f.read()
-    print(email_message)
-    message = EmailMultiAlternatives(subject=camp_subj, body=email_message, from_email=settings.EMAIL_HOST_USER, to=emails)
-    email_template = get_template(camp_email).render(ctx)
-    message.attach_alternative(email_template, "text/html")
-    async(message.send())
+
+    for items in search_results:
+        ctx = {
+            'user': items.full_name,
+            'url': camp_short,
+            'email': items.email
+        }
+        message = EmailMultiAlternatives(subject=camp_subj, body=email_message, from_email=settings.EMAIL_HOST_USER,
+                                         to=[items.email])
+        email_template = get_template(camp_email).render(ctx)
+        message.attach_alternative(email_template, "text/html")
+        message.send()
     return ses_mail
 
 

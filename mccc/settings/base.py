@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'solo.apps.SoloAppConfig',
+    'django_q_email',
 ]
 
 SITE_ID = 1
@@ -134,3 +135,4 @@ FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
 
 SHORTCODE_MAX = 15
 SHORTCODE_MIN = 4
+EMAIL_BACKEND = 'django_q_email.backends.DjangoQBackend'
