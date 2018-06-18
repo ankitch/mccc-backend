@@ -59,7 +59,7 @@ class Campaign(models.Model):
 
 
 class SettingConfig(SingletonModel):
-    attributes = JSONField(null=True, default='{"age": "", "sex": ""}')
+    attributes = JSONField(null=True, default={"age": "", "sex": ""})
 
     class Meta:
         verbose_name = "Additional Fields"
