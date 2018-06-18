@@ -1,17 +1,14 @@
-from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
-from django_q.tasks import async
 from haystack.query import SearchQuerySet, SQ
 from pyfcm import FCMNotification
 from pyfcm.errors import InvalidDataError
 from apps.tanks.models import Campaign
 from mccc import settings
-from mccc.settings import TEMPLATES
 
 
 def send_sms_fcm(campaign, segment, fcm_registration_id):
-    print(segment)
     if segment == 0:
         data_message = {
             'campaign': campaign,
@@ -41,6 +38,7 @@ def email_to_ses(query, lists, campaign):
     camp_subj = campaign.email_subject
     camp_short = campaign.short_url.short_code
     emails = []
+    print('here')
     file_path = campaign.email_template.path
     with open(file_path) as f: email_message = f.read()
 
@@ -60,6 +58,7 @@ def email_to_ses(query, lists, campaign):
 
 def perform_search(query, lists):
     search_query = None
+    print(query)
     if 'sex' in query:
         search_query = SearchQuerySet().filter(SQ(lists=lists) & SQ(sex=query['sex']))
 
