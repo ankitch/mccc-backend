@@ -1,9 +1,7 @@
 from drf_haystack.serializers import HaystackSerializer, HaystackSerializerMixin
 from drf_haystack.viewsets import HaystackViewSet
 
-from apps.tanks.models import Customer
 from apps.tanks.search_indexes import CustomerIndex
-from apps.tanks.serializers import CustomerSerializer
 
 
 class CustomerSearchSerializer(HaystackSerializer):

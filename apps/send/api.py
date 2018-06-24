@@ -28,7 +28,7 @@ class ScheduleCampaign(APIView):
 
         fcm_registration_id = User.objects.get(pk=request.user.id).fcm_reg_id
 
-        sms_func = 'apps.send.utils.py.send_sms_fcm'
+        sms_func = 'apps.send.utils.send_sms_fcm'
 
         if channel == "SMS":
             sch = schedule_sms(sms_func, campaigns, segments, fcm_registration_id, next_run, schedule_type, repeats, minutes)
