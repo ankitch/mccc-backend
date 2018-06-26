@@ -11,6 +11,7 @@ REST_USE_JWT = True
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=172800),
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_ALLOW_REFRESH': True,
     'JWT_DECODE_HANDLER':
         'rest_framework_jwt.utils.jwt_decode_handler',
 

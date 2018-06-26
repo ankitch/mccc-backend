@@ -8,7 +8,7 @@ from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, Campaign
 from apps.send.api import SendSMS, ScheduleCampaign
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
-from apps.tanks.api import Settings, GetMessage, AddSegment
+from apps.tanks.api import Settings, GetMessage, AddSegment, CustomerDocumentView
 from apps.tanks.haystack_api import CustomerSearchView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
@@ -22,7 +22,7 @@ router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
 router.register('segments', tank_api.SegmentViewSet, base_name='segment')
 router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
 router.register('sms/analytics', SMSAnalyticsViewSet, base_name='sms_analytics')
-router.register('customer/search', CustomerSearchView, base_name='customer_search')
+router.register('customer/search', CustomerDocumentView, base_name='customer_search')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

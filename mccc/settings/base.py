@@ -9,12 +9,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'haystack',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     'django_q',
     'apps.users',
     'apps.tanks',
     'apps.url_shortner',
     'apps.analytics',
+
 
     'rest_framework',
     'corsheaders',
@@ -96,9 +98,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-from .auth_settings import *
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kathmandu'
 USE_I18N = True
@@ -119,7 +118,7 @@ Q_CLUSTER = {
     }
 }
 
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 STATIC_URL = '/static/'
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
@@ -128,3 +127,9 @@ FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
 SHORTCODE_MAX = 15
 SHORTCODE_MIN = 4
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
+from .auth_settings import *

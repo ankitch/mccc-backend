@@ -1,10 +1,13 @@
 from django.shortcuts import get_object_or_404
+from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.utils import perform_search
+from apps.tanks.doc_searializer import CustomerDocumentSerializer
+from apps.tanks.documents import CustomerDocument
 from .models import Customer, List, Campaign, Segment, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
@@ -77,7 +80,6 @@ class GetMessage(APIView):
         if segment_id != 0:
             get_segment_query = campaign.list.segments.get(pk=segment_id).query
 
-
         phone_list = []
         get_template = campaign.sms_template.format(
             url='https://' + request.get_host()
@@ -114,3 +116,9 @@ class AddSegment(APIView):
         segment_id = request.data['segments_id']
         create = SegmentList.objects.create(list_id=list_id, segments_id=segment_id)
         return Response({'segment': "created"})
+
+
+class CustomerDocumentView(BaseDocumentViewSet):
+    document = CustomerDocument
+    serializer_class = CustomerDocumentSerializer
+    search_fields = ('full_name', 'email', 'phone', 'lists', 'add_fields')
