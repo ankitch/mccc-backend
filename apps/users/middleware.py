@@ -1,4 +1,4 @@
-from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 
 from apps.users.models import User, Role
 from apps.users.serializers import RoleSerializer
@@ -19,12 +19,18 @@ class RoleMiddleware(object):
     def __call__(self, request):
         if request.META.get('HTTP_AUTHORIZATION'):
             token_key = request.META.get('HTTP_AUTHORIZATION').split(' ')[-1]
-            payload = api_settings.JWT_DECODE_HANDLER(token_key)
-            user_id = api_settings.JWT_PAYLOAD_GET_USER_ID_HANDLER(payload)
+            token = {'token': token_key}
+
             try:
-                request.user = User.objects.get(pk=user_id)
-                print(request.user)
-            except User.DoesNotExist:
+                valid_data = VerifyJSONWebTokenSerializer().validate(token)
+                user = valid_data['user']
+                request.user = user
+                try:
+                    request.user = User.objects.get(pk=user.id)
+                    print(request.user)
+                except User.DoesNotExist:
+                    pass
+            except:
                 pass
 
         role = None
