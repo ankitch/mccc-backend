@@ -1,13 +1,11 @@
 from django.shortcuts import get_object_or_404
-from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
+from elasticsearch_dsl import Search
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.utils import perform_search
-from apps.tanks.doc_searializer import CustomerDocumentSerializer
-from apps.tanks.documents import CustomerDocument
 from .models import Customer, List, Campaign, Segment, SettingConfig, SegmentList
 from .serializers import CustomerSerializer, ListSerializer, ListDetailSerializer, CampaignSerializer, \
     CampaignDetailSerializer, SegmentSerializer, SegmentDetailSerializer
@@ -118,7 +116,93 @@ class AddSegment(APIView):
         return Response({'segment': "created"})
 
 
-class CustomerDocumentView(BaseDocumentViewSet):
-    document = CustomerDocument
-    serializer_class = CustomerDocumentSerializer
-    search_fields = ('full_name', 'email', 'phone', 'lists', 'add_fields')
+class CustomerDocumentView(APIView):
+    def get(self, request, format=None):
+        from elasticsearch import Elasticsearch
+
+        client = Elasticsearch()
+        list_id = 2
+        key = "add_fields.sex"
+        value = "female"
+        ms = Search(using=client, index="sendtank")
+        ms = ms.from_dict({
+            'query': {
+                'nested': {
+                    'path': 'add_fields',
+                    'query': {
+                        'match': {
+                            key: value
+                        }
+                    }
+                }
+            }
+        })
+        ms = ms.from_dict({
+            'query':{
+                'match':{
+                    'lists':list_id
+                }
+            }
+        })
+        print(ms.to_dict())
+        responses = ms.execute()
+        for response in responses:
+            print(responses)
+
+        # ms = MultiSearch(index='sendtank')
+        #
+        # ms = ms.add(Search().from_dict({
+        #     'query': {
+        #         'nested': {
+        #             'path': 'add_fields',
+        #             'query': {
+        #                 'match': {
+        #                     key: value
+        #                 }
+        #             }
+        #         }
+        #     }}))
+        # ms.filter('match', lists=list_id)
+        # responses = ms.execute()
+        # for response in responses:
+        #     for hit in response:
+        #         print(hit.full_name)
+        #
+        # s = CustomerDocument().search().from_dict({
+        #     'query': {
+        #         'nested': {
+        #             'path': 'add_fields',
+        #             'query': {
+        #                 'match': {
+        #                     key: value
+        #                 }
+        #             }
+        #         }
+        #     }})
+        # s = s.from_dict({
+        #     'query': {
+        #         'nested': {
+        #             'path': 'add_fields',
+        #             'query': {
+        #                 'match': {
+        #                     "lists.list_id": list_id
+        #                 }
+        #             }
+        #         }
+        #     }})
+
+        # s = CustomerDocument.search(using=client, index="customer_sendtank") \
+        # .query("match", lists__list_id=list_id)
+
+        # print(response)
+        # for r in response:
+        #     print(r.phone + " " + r.email)
+
+        # r = s.to_queryset()
+
+        import ipdb
+        ipdb.set_trace()
+
+        # document = CustomerDocument
+        # serializer_class = CustomerDocumentSerializer
+        # search_fields = ('full_name', 'email', 'phone', 'lists.lists_id', 'add_fields')

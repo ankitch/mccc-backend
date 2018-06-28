@@ -22,7 +22,7 @@ router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
 router.register('segments', tank_api.SegmentViewSet, base_name='segment')
 router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
 router.register('sms/analytics', SMSAnalyticsViewSet, base_name='sms_analytics')
-router.register('customer/search', CustomerDocumentView, base_name='customer_search')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,7 +32,7 @@ urlpatterns = [
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
     path('v1/send/sms/', SendSMS.as_view()),
-
+    path('v1/search/', CustomerDocumentView.as_view()),
     path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
 
     path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export_customers'),

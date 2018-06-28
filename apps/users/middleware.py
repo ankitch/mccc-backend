@@ -27,7 +27,6 @@ class RoleMiddleware(object):
                 request.user = user
                 try:
                     request.user = User.objects.get(pk=user.id)
-                    print(request.user)
                 except User.DoesNotExist:
                     pass
             except:
