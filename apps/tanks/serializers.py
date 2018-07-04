@@ -72,6 +72,8 @@ class SegmentDetailSerializer(serializers.ModelSerializer):
 
 class CampaignSerializer(serializers.ModelSerializer):
     segments = serializers.SerializerMethodField()
+    total_customer = serializers.SerializerMethodField()
+    list_name = serializers.SerializerMethodField('get_lists_name')
 
     def create(self, validated_data):
         validated_data['company'] = self.context['request'].company
@@ -93,25 +95,71 @@ class CampaignSerializer(serializers.ModelSerializer):
             'results': serializer.data,
         }
 
-    list_name = serializers.SerializerMethodField('get_lists_name')
-
     def get_lists_name(self, obj):
-        return obj.list.name
+        if obj.type == "Bulk":
+            return "This is of Bulk Type"
+
+        elif obj.type == "Regular":
+            return obj.list.name
+
+    def get_total_customer(self, obj):
+        if obj.type == 'Bulk':
+            if (obj.to_numbers is None):
+                return "0"
+            return str(len(obj.to_numbers))
+
+        elif obj.type == 'Regular':
+            return obj.list.customers.count()
+
+    # # validation
+    def validate_list(self, data):
+        campaign_type = self.initial_data.get('type')
+
+        if campaign_type == 'Regular':
+            raise serializers.ValidationError("This field is required.")
+
+        elif campaign_type == 'Bulk':
+            raise serializers.ValidationError("This field is not required here.")
+
+        return data
+
+    def validate_to_numbers(self, data):
+        campaign_type = self.initial_data.get('type')
+
+        if campaign_type == "Bulk":
+            raise serializers.ValidationError("This field is required.")
+
+        elif campaign_type == "Regular":
+            raise serializers.ValidationError("This field is not required here.")
+        return data
+
+    def validate_name(self, data):
+        campaign_type = self.initial_data.get('type')
+
+        if campaign_type == "Regular":
+            raise serializers.ValidationError("This field is required.")
+
+        return data
 
     class Meta:
         model = Campaign
-        fields = (
-            'id', 'name', 'details', 'list', 'short_url', 'created_at', 'updated_at', 'segments', 'sms_template',
-            'list_name')
+        fields = ('id', 'name', 'details', 'type', 'to_numbers', 'sms_template', 'list',
+                  'total_customer', 'segments', 'list_name', 'created_at', 'updated_at',)
 
 
 class CampaignDetailSerializer(serializers.ModelSerializer):
     customers = serializers.SerializerMethodField()
 
     def get_customers(self, obj):
+
         lst = []
-        for customer in obj.list.customers.all():
-            lst.append(customer.phone)
+        if obj.type == "Bulk":
+            for customer in obj.to_numbers:
+                lst.append(customer)
+
+        elif obj.type == "Regular":
+            for customer in obj.list.customers.all():
+                lst.append(customer.phone)
 
         return {'+977': lst}
 

@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 from solo.models import SingletonModel
 
@@ -27,34 +27,6 @@ class Customer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def get_grouped_lists(self):
-        lists = self.lists.order_by('name')
-        field_data = []
-        array= []
-        for items in lists:
-            array.append({"list_id":items.id, 'list_data':[{'id': items.id, 'name': items.name}]})
-
-        print(array)
-        # [{'find_name_1': 1, 'find_name_2': [{'taglevel': 1, 'name': Foo'}]}, {'find_name_1': 2', 'find_a_name_2': [
-            #     {'taglevel': 2, 'name': Bar'}] } ]
-
-        groued_tags = {
-            ""
-        }
-        # grouped_tags = {
-        #     lists_level: [
-        #         {'id': lists_level.id, 'name': lists_level.name, }
-        #         for lists_level in lists_of_level
-        #     ] for lists_level, lists_of_level
-        #     in groupby(lists, lambda lists: lists.id)
-        # }
-        # array = []
-        # array.append(grouped_tags)
-        # print(array)
-        # import ipdb
-        # ipdb.set_trace()
-        return array
-
     def __str__(self):
         return self.full_name
 
@@ -68,15 +40,23 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
+
+
+CAMPAIGN_TYPE = (
+    ('Bulk', 'Bulk'),
+    ('Regular', 'Regular'),
+)
 
 
 class Campaign(models.Model):
-    name = models.CharField(max_length=255)
-    details = models.TextField()
+    name = models.CharField(max_length=40, null=True, blank=True)
+    details = models.TextField(blank=True, null=True)
+    type = models.CharField(max_length=50, choices=CAMPAIGN_TYPE)
+    to_numbers = ArrayField(models.CharField(max_length=20, blank=True, null=True), blank=True, null=True)
     sms_template = models.TextField(blank=True, max_length=160)
-    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns')
+    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='campaigns', blank=True, null=True)
     short_url = models.ForeignKey(ShortenedUrl, on_delete=models.CASCADE, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

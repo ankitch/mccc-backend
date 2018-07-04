@@ -65,10 +65,8 @@ def perform_search(query, lists):
                 }
             }
         })
-        # search_query = search_query.filter('match', lists=list_id)
+    # search_query = search_query.filter('match', lists=list_id)
     responses = search_query.execute()
     for response in responses:
         print(response)
-    import ipdb
-    ipdb.set_trace()
     return responses
