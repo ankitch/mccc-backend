@@ -12,6 +12,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
     'django_q',
+
     'apps.users',
     'apps.tanks',
     'apps.url_shortner',
@@ -27,7 +28,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'solo.apps.SoloAppConfig'
 ]
 
 SITE_ID = 1
@@ -119,7 +119,6 @@ Q_CLUSTER = {
     }
 }
 
-# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 STATIC_URL = '/static/'
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
@@ -133,4 +132,7 @@ ELASTICSEARCH_DSL = {
         'hosts': 'localhost:9200'
     },
 }
+ELASTICSEARCH_DSL_AUTO_REFRESH = True
+ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
+
 from .auth_settings import *

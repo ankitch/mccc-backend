@@ -53,7 +53,7 @@ class CustomRegistrationSerializer(serializers.Serializer):
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'settings')
 
 
 class RoleSerializer(serializers.ModelSerializer):

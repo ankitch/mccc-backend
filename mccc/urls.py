@@ -3,19 +3,21 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+from rest_framework_jwt.views import obtain_jwt_token
 
 from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, CampaignAnalytics
 from apps.send.api import SendSMS, ScheduleCampaign
 from apps.tanks import api as tank_api
+from apps.users import api as user_api
 from apps.tanks import views as tank_views
-from apps.tanks.api import Settings, GetMessage, AddSegment, CustomerDocumentView
-from apps.tanks.haystack_api import CustomerSearchView
+from apps.tanks.api import GetMessage, AddSegment, CustomerDocumentView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
 from apps.users.views import FCMDeviceRegistration
 
 router = DefaultRouter()
 
+router.register('company', user_api.CompanyViewSet, base_name='company')
 router.register('customers', tank_api.CustomerViewSet, base_name='customers')
 router.register('lists', tank_api.ListViewSet, base_name='lists')
 router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
@@ -32,7 +34,7 @@ urlpatterns = [
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
     path('v1/send/sms/', SendSMS.as_view()),
-
+    path('v1/api/login/', obtain_jwt_token),
     path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
 
     path('v1/lists/<int:pk>/export/customers/', tank_views.export_customers, name='export_customers'),
@@ -44,7 +46,6 @@ urlpatterns = [
 
     path('v1/camp/analytics/<int:campaign_id>/',CampaignAnalytics.as_view()),
 
-    path('v1/settings/', Settings.as_view()),
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
 ]
 if settings.DEBUG:

@@ -1,11 +1,10 @@
 import ast
-
 import xlwt
 from django import forms
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
-from haystack.management.commands import rebuild_index, update_index
+from django_elasticsearch_dsl.registries import registry
 
 from apps.tanks.models import Customer, List
 
@@ -44,6 +43,10 @@ def export_customers(request, pk):
     return response
 
 
+rebuild = {'verbosity': 1, 'settings': None, 'pythonpath': None, 'traceback': False, 'no_color': False, 'models': None,
+           'action': 'rebuild', 'force': False}
+
+
 def import_customers(request, pk):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -63,8 +66,6 @@ def import_customers(request, pk):
                     else:
                         dict_cus[attr] = val
                 dict_cus['company_id'] = request.company.id
-                # import ipdb
-                # ipdb.set_trace()
                 customer = Customer(**dict_cus)
                 customer.id = None
                 new_customers.append(customer)
@@ -76,7 +77,16 @@ def import_customers(request, pk):
                 return HttpResponseBadRequest('ERROR')
             lists = get_object_or_404(List, pk=pk)
             lists.customers.add(*customer_ids)
-            update_index.Command().handle(interactive=False)
+            models = registry.get_models()
+            for index in registry.get_indices(models):
+                index.delete(ignore=404)
+
+            for index in registry.get_indices(models):
+                index.create()
+
+            for doc in registry.get_documents(models):
+                qs = doc().get_queryset()
+                doc().update(qs)
 
             return HttpResponse("OK")
         else:

@@ -13,7 +13,7 @@ from apps.url_shortner.models import ShortenedUrl
 class DashboardAnalytics(APIView):
     def get(self, request, format=None):
         customer_count = Customer.objects.filter(company=request.company).count()
-        campaign_count = Campaign.objects.filter(company=request.company).count()
+        campaign_count = Campaign.objects.filter(company=request.company).filter(type="Regular").count()
         list_count = List.objects.filter(company=request.company).count()
         total_url_short = ShortenedUrl.objects.count()
         click_event = ClickEvent.objects.aggregate(Sum('count'))
@@ -21,7 +21,6 @@ class DashboardAnalytics(APIView):
         female_customers = Customer.objects.filter(add_fields__sex="female").count()
         failed_task = Task.objects.filter(success=False).count()
         success_task = Task.objects.filter(success=True).count()
-
         return Response({'customer': customer_count,
                          'campaign': campaign_count,
                          'list': list_count,

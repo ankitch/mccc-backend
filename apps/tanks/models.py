@@ -1,6 +1,5 @@
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
-from solo.models import SingletonModel
 
 from apps.url_shortner.models import ShortenedUrl
 from apps.users.models import Company
@@ -40,8 +39,8 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    # class Meta:
-    #     auto_created = True
+    class Meta:
+        auto_created = True
 
 
 CAMPAIGN_TYPE = (
@@ -67,13 +66,6 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class SettingConfig(SingletonModel):
-    attributes = JSONField(null=True, default={"age": "", "sex": ""})
-
-    class Meta:
-        verbose_name = "Additional Fields"
 
 
 class Segment(models.Model):

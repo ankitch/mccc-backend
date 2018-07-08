@@ -15,13 +15,6 @@ class CustomerDocument(DocType):
     full_name = fields.TextField()
     email = fields.TextField()
     phone = fields.TextField()
-    # lists = fields.NestedField(attr="get_grouped_lists", properties={
-    #     'list_id': fields.IntegerField(),
-    #     'list_data': fields.ObjectField(properties={
-    #         'id': fields.IntegerField(),
-    #         'name': fields.TextField()
-    #     })
-    # })
     lists = fields.ListField(field=fields.IntegerField())
     add_fields = fields.NestedField()
 
@@ -29,8 +22,8 @@ class CustomerDocument(DocType):
         return instance.add_fields
 
     def prepare_lists(self, instance):
-        print([list.id for list in instance.lists.all()])
         return [list.id for list in instance.lists.all()]
 
     class Meta:
         model = Customer
+        queryset_pagination = 1000

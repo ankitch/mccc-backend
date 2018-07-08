@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from rest_framework import serializers
 
-from .models import Customer, List, Campaign, Segment, SettingConfig
+from .models import Customer, List, Campaign, Segment
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -22,12 +22,6 @@ class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
         fields = ('id', 'name', 'created_at', 'updated_at')
-
-
-class SettingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SettingConfig
-        fields = '__all__'
 
 
 class ListDetailSerializer(serializers.ModelSerializer):
@@ -51,7 +45,7 @@ class ListDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = List
-        fields = ('id', 'name', 'customer')
+        fields = '__all__'
 
 
 class SegmentSerializer(serializers.ModelSerializer):
@@ -115,12 +109,8 @@ class CampaignSerializer(serializers.ModelSerializer):
     def validate_list(self, data):
         campaign_type = self.initial_data.get('type')
 
-        if campaign_type == 'Regular':
-            raise serializers.ValidationError("This field is required.")
-
-        elif campaign_type == 'Bulk':
+        if campaign_type == 'Bulk':
             raise serializers.ValidationError("This field is not required here.")
-
         return data
 
     def validate_to_numbers(self, data):
@@ -130,14 +120,12 @@ class CampaignSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This field is required.")
 
         elif campaign_type == "Regular":
-            raise serializers.ValidationError("This field is not required here.")
+            return None
+
         return data
 
     def validate_name(self, data):
         campaign_type = self.initial_data.get('type')
-
-        if campaign_type == "Regular":
-            raise serializers.ValidationError("This field is required.")
 
         return data
 
