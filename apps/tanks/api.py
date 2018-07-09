@@ -85,10 +85,12 @@ class GetMessage(APIView):
             get_segment_query = campaign.list.segments.get(pk=segment_id).query
 
         phone_list = []
-        get_template = campaign.sms_template.format(
-            url='https://' + request.get_host()
-            if request.is_secure() else 'http://' + request.get_host() + '/s/' + campaign.short_url.short_code + '/' + str(
-                campaign_id))
+        #
+        # get_template = campaign.sms_template.format(
+        #     url='https://' + request.get_host()
+        #     if request.is_secure() else 'http://' + request.get_host() + '/s/' + url + '/' + str(
+        #         campaign_id))
+        get_template = campaign.sms_template
 
         search_result = perform_search(get_segment_query, campaign.list)
 
@@ -107,94 +109,17 @@ class AddSegment(APIView):
 
 
 class CustomerDocumentView(APIView):
-    def post(self, request, format=None):
-        return ""
-# def get(self, request, format=None):
-#     from elasticsearch import Elasticsearch
-#
-#     client = Elasticsearch()
-#     list_id = 2
-#     key = "add_fields.sex"
-#     value = "female"
-#     ms = Search(using=client, index="sendtank")
-#     ms = ms.from_dict({
-#         'query': {
-#             'nested': {
-#                 'path': 'add_fields',
-#                 'query': {
-#                     'match': {
-#                         key: value
-#                     }
-#                 }
-#             }
-#         }
-#     })
-#     ms = ms.from_dict({
-#         'query':{
-#             'match':{
-#                 'lists':list_id
-#             }
-#         }
-#     })
-#     print(ms.to_dict())
-#     responses = ms.execute()
-#     for response in responses:
-#         print(responses)
+    def get(self, request, format=None, *args, **kwargs):
+        campaign_id = kwargs.get('campaginpk')
+        segment_id = kwargs.get('segmentpk')
+        campaign = get_object_or_404(Campaign, pk=campaign_id)
+        get_segment_query = {}
 
-# ms = MultiSearch(index='sendtank')
-#
-# ms = ms.add(Search().from_dict({
-#     'query': {
-#         'nested': {
-#             'path': 'add_fields',
-#             'query': {
-#                 'match': {
-#                     key: value
-#                 }
-#             }
-#         }
-#     }}))
-# ms.filter('match', lists=list_id)
-# responses = ms.execute()
-# for response in responses:
-#     for hit in response:
-#         print(hit.full_name)
-#
-# s = CustomerDocument().search().from_dict({
-#     'query': {
-#         'nested': {
-#             'path': 'add_fields',
-#             'query': {
-#                 'match': {
-#                     key: value
-#                 }
-#             }
-#         }
-#     }})
-# s = s.from_dict({
-#     'query': {
-#         'nested': {
-#             'path': 'add_fields',
-#             'query': {
-#                 'match': {
-#                     "lists.list_id": list_id
-#                 }
-#             }
-#         }
-#     }})
+        if segment_id != 0:
+            get_segment_query = campaign.list.segments.get(pk=segment_id).query
 
-# s = CustomerDocument.search(using=client, index="customer_sendtank") \
-# .query("match", lists__list_id=list_id)
-
-# print(response)
-# for r in response:
-#     print(r.phone + " " + r.email)
-
-# r = s.to_queryset()
-#
-# import ipdb
-# ipdb.set_trace()
-#
-# # document = CustomerDocument
-# serializer_class = CustomerDocumentSerializer
-# search_fields = ('full_name', 'email', 'phone', 'lists.lists_id', 'add_fields')
+        search_result = perform_search(get_segment_query, campaign.list)
+        counter = 0
+        for item in search_result:
+            counter += 1
+        return Response({"total": counter})

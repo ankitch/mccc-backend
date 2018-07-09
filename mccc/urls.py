@@ -24,7 +24,6 @@ router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
 router.register('segments', tank_api.SegmentViewSet, base_name='segment')
 router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
 router.register('sms/analytics', SMSAnalyticsViewSet, base_name='sms_analytics')
-router.register('search', CustomerDocumentView, base_name='search' )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +42,7 @@ urlpatterns = [
 
     path('v1/lists/segments/create/', AddSegment.as_view()),
     path('v1/campaigns/<int:pk>/segment/<int:segmentpk>/', GetMessage.as_view()),
+    path('v1/search/<int:campaginpk>/segment/<int:segmentpk>/', CustomerDocumentView.as_view()),
 
     path('v1/camp/analytics/<int:campaign_id>/',CampaignAnalytics.as_view()),
 
