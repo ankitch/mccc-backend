@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django_elasticsearch_dsl.registries import registry
+from django_q.tasks import async
 
 from apps.tanks.models import Customer, List
 
@@ -77,19 +78,23 @@ def import_customers(request, pk):
                 return HttpResponseBadRequest('ERROR')
             lists = get_object_or_404(List, pk=pk)
             lists.customers.add(*customer_ids)
-            models = registry.get_models()
-            for index in registry.get_indices(models):
-                index.delete(ignore=404)
-
-            for index in registry.get_indices(models):
-                index.create()
-
-            for doc in registry.get_documents(models):
-                qs = doc().get_queryset()
-                doc().update(qs)
+            async(rebuild_index())
 
             return HttpResponse("OK")
         else:
             return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
+
+
+def rebuild_index():
+    models = registry.get_models()
+    for index in registry.get_indices(models):
+        index.delete(ignore=404)
+
+    for index in registry.get_indices(models):
+        index.create()
+
+    for doc in registry.get_documents(models):
+        qs = doc().get_queryset()
+        doc().update(qs)

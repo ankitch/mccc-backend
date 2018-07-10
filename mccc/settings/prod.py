@@ -1,8 +1,8 @@
-import elasticsearch
 import os
-# from requests_aws4auth import AWS4Auth
 
 from .base import BASE_DIR
+
+# from requests_aws4auth import AWS4Auth
 
 SECRET_KEY = 'nxg=f!y6$z6cti-j5mgjbc#92pb6%(e--9+b)1vvb_-(wyh-dd'
 
@@ -23,18 +23,24 @@ FCM_API_KEY_SEND = "AAAAQvw3CNQ:APA91bHEdh46Gd7q6yJ2L4pjowxLE0Alg5MWQ32id3iV51AE
 # awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
 
 # haystack settings for elastic search
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'https://search-sendtank-xrnnzab7waiyfxguayu476vaie.us-east-2.es.amazonaws.com',
-        'INDEX_NAME': 'sendtank',
-        'KWARGS': {
-            'port': 443,
-            # 'http_auth': awsauth,
-            'use_ssl': True,
-            'verify_certs': True,
-            'connection_class': elasticsearch.RequestsHttpConnection,
-        }
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+#         'URL': 'https://search-sendtank-xrnnzab7waiyfxguayu476vaie.us-east-2.es.amazonaws.com',
+#         'INDEX_NAME': 'sendtank',
+#         'KWARGS': {
+#             'port': 443,
+#             # 'http_auth': awsauth,
+#             'use_ssl': True,
+#             'verify_certs': True,
+#             'connection_class': elasticsearch.RequestsHttpConnection,
+#         }
+#
+#     },
+# }
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'https://search-sendtank-zo6jc5r4mxlt7uvbso6meo44e4.us-east-1.es.amazonaws.com'
     },
 }
