@@ -18,7 +18,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, '..', '..', 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', '..', 'media')
 
-FCM_API_KEY_SEND = "AAAAQvw3CNQ:APA91bHEdh46Gd7q6yJ2L4pjowxLE0Alg5MWQ32id3iV51AEaf5D1HLDGsABTR3Z1mfbFP5g8aQ02EJ1D1Yif2prvabMhndtshZQ03jEDxQQEeuIIJoTeRRrLXrRrLJn5zdrMhnZHp-9"
+#mero_job_fcm_api_key
+FCM_API_KEY_SEND = "AAAA29Kizak:APA91bE8SyRnhLRQNDCyiQyhM5Z0jPyFcrwF_3FRQaYYgT5t3D6CJk9i_svj8qa_3ZgRMlvk0Ll754V4GGFXIJCN7ekiai-yL7-NXW5ICShaIgUdwU2g-OiD9I14aCDXurfv581d0fXCB1pxEvVMG59LrakKvX1jog"
 
 # awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
 
