@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 
+from apps.send.utils import send_misscall_info
 from apps.url_shortner.models import ShortenedUrl
 from apps.users.models import Company
 
@@ -39,13 +40,14 @@ class ListCustomer(models.Model):
     def __str__(self):
         return '%s  - %s' % (self.list, self.customer)
 
-    class Meta:
-        auto_created = True
+    # class Meta:
+    #     auto_created = True
 
 
 CAMPAIGN_TYPE = (
     ('Bulk', 'Bulk'),
     ('Regular', 'Regular'),
+    ('Misscall', 'Misscall')
 )
 
 
@@ -60,6 +62,30 @@ class Campaign(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    misscall_active = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.misscall_active:
+            try:
+                temp = Campaign.objects.get(misscall_active=True)
+                if self != temp:
+                    temp.misscall_active = False
+                    temp.save()
+            except Campaign.DoesNotExist:
+                pass
+        super(Campaign, self).save(*args, **kwargs)
+
+    def update(self, *args, **kwargs):
+        if self.misscall_active:
+            try:
+                temp = Campaign.objects.get(misscall_active=True)
+                if self != temp:
+                    temp.misscall_active = False
+                    temp.save()
+
+            except Campaign.DoesNotExist:
+                pass
+        super(Campaign, self).update(*args, **kwargs)
 
     def company_name(self):
         return self.company.name

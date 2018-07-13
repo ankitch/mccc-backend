@@ -39,3 +39,17 @@ class SMSAnalytics(models.Model):
     @property
     def campaign_name(self):
         return self.campaign.name
+
+
+class MisscallAnalytics(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+    mobile_number = models.CharField(max_length=20, null=True)
+    timestamp = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.campaign.name + " " + self.mobile_number
+
+    @property
+    def campaign_name(self):
+        return self.campaign.name

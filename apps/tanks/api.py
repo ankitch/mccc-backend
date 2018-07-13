@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -50,6 +50,10 @@ class CampaignViewSet(viewsets.ModelViewSet):
 
         elif type == '"Regular"':
             queryset = queryset.filter(type="Regular")
+
+        elif type == '"Misscall"':
+            queryset = queryset.filter(type="Misscall")
+
         return queryset
 
     @detail_route(methods=['get'])
@@ -123,3 +127,12 @@ class CustomerDocumentView(APIView):
         for item in search_result:
             counter += 1
         return Response({"total": counter})
+
+
+class CampaignListView(generics.ListAPIView):
+    serializer_class = CampaignSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        queryset = Campaign.objects.filter(company=company)
+        return queryset.filter(type="Misscall").filter(misscall_active=True)

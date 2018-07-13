@@ -2,7 +2,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.schedules import schedule_sms
-from apps.send.utils import send_sms_fcm
+from apps.send.utils import send_sms_fcm, send_misscall_info
+from apps.tanks.models import Campaign
 from apps.users.models import User
 
 
@@ -31,6 +32,17 @@ class ScheduleCampaign(APIView):
         sms_func = 'apps.send.utils.send_sms_fcm'
 
         if channel == "SMS":
-            sch = schedule_sms(sms_func, campaigns, segments, fcm_registration_id, next_run, schedule_type, repeats, minutes)
+            sch = schedule_sms(sms_func, campaigns, segments, fcm_registration_id, next_run, schedule_type, repeats,
+                               minutes)
 
         return Response({'schedule': 'created'})
+
+
+class PushDataMessage(APIView):
+    def post(self, request, format=None):
+        id = request.data['campaign']
+        campaign = Campaign.objects.get(pk=id)
+        fcm_reg_id = request.user.fcm_reg_id
+        send = send_misscall_info(campaign, fcm_reg_id)
+        print(send)
+        return Response(send)

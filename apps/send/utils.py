@@ -5,23 +5,46 @@ from pyfcm.errors import InvalidDataError
 
 from mccc import settings
 
+push_service = FCMNotification(
+    api_key=settings.FCM_API_KEY_SEND)
+
 
 def send_sms_fcm(campaign, segment, fcm_registration_id):
     if segment == 0:
         data_message = {
             'campaign': campaign,
+            'type': 'SMS'
         }
     else:
         data_message = {
             'campaign': campaign,
             'segment': segment,
+            'type': 'SMS'
         }
-    push_service = FCMNotification(
-        api_key=settings.FCM_API_KEY_SEND)
+
     result = None
     try:
         result = push_service.single_device_data_message(
             registration_id=fcm_registration_id,
+            data_message=data_message)
+    except InvalidDataError:
+        raise
+    return result
+
+
+def send_misscall_info(campaign, fcm_reg_id):
+    data_message = {
+        'campaign': campaign.id,
+        'sms_template': campaign.sms_template,
+        'type': 'Misscall',
+        'status': campaign.misscall_active
+
+    }
+    result = None
+
+    try:
+        result = push_service.single_device_data_message(
+            registration_id=fcm_reg_id,
             data_message=data_message)
     except InvalidDataError:
         raise

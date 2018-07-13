@@ -1,16 +1,17 @@
 from django.conf import settings
-from django.conf.urls import include
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, CampaignAnalytics
-from apps.send.api import SendSMS, ScheduleCampaign
+from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, CampaignAnalytics, MisscallAnalyticsViewSet, \
+    CampaignMisscallAnalytics
+from apps.send.api import SendSMS, ScheduleCampaign, PushDataMessage
 from apps.tanks import api as tank_api
 from apps.users import api as user_api
 from apps.tanks import views as tank_views
-from apps.tanks.api import GetMessage, AddSegment, CustomerDocumentView
+from apps.tanks.api import GetMessage, AddSegment, CustomerDocumentView, CampaignListView
 from apps.url_shortner.api import ShortenedUrlViewSet
 from apps.url_shortner.views import ShortRedirectView
 from apps.users.views import FCMDeviceRegistration
@@ -24,6 +25,7 @@ router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
 router.register('segments', tank_api.SegmentViewSet, base_name='segment')
 router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
 router.register('sms/analytics', SMSAnalyticsViewSet, base_name='sms_analytics')
+router.register('miscall/analytics', MisscallAnalyticsViewSet, base_name='sms_analytics')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +34,7 @@ urlpatterns = [
     path('v1/dashboard/', DashboardAnalytics.as_view()),
     path('v1/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('v1/users/reg_id/', FCMDeviceRegistration.as_view()),
+    path('v1/misscall/', CampaignListView.as_view()),
     path('v1/send/sms/', SendSMS.as_view()),
     path('v1/api/login/', obtain_jwt_token),
     path('v1/schedule/campaign/', ScheduleCampaign.as_view()),
@@ -45,6 +48,10 @@ urlpatterns = [
     path('v1/search/<int:campaginpk>/segment/<int:segmentpk>/', CustomerDocumentView.as_view()),
 
     path('v1/camp/analytics/<int:campaign_id>/',CampaignAnalytics.as_view()),
+    path('v1/camp/misscall/analytics/<int:campaign_id>/',CampaignMisscallAnalytics.as_view()),
+
+
+    path('v1/push/misscall/',PushDataMessage.as_view()),
 
     path('s/<slug:shortcode>/<int:camp_id>/', ShortRedirectView.as_view())
 ]

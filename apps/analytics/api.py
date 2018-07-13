@@ -4,8 +4,8 @@ from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.analytics.models import ClickEvent, SMSAnalytics
-from apps.analytics.serializers import SMSAnalyticsSerializers
+from apps.analytics.models import ClickEvent, SMSAnalytics, MisscallAnalytics
+from apps.analytics.serializers import SMSAnalyticsSerializers, MisscallAnalyticsSerializers
 from apps.tanks.models import Customer, Campaign, List
 from apps.url_shortner.models import ShortenedUrl
 
@@ -44,9 +44,22 @@ class SMSAnalyticsViewSet(CreateListMixin, viewsets.ModelViewSet):
     serializer_class = SMSAnalyticsSerializers
 
 
+class MisscallAnalyticsViewSet(CreateListMixin, viewsets.ModelViewSet):
+    queryset = MisscallAnalytics.objects.all()
+    serializer_class = MisscallAnalyticsSerializers
+
+
 class CampaignAnalytics(generics.ListAPIView):
     serializer_class = SMSAnalyticsSerializers
 
     def get_queryset(self):
         campaign = self.kwargs['campaign_id']
         return SMSAnalytics.objects.filter(campaign=campaign)
+
+
+class CampaignMisscallAnalytics(generics.ListAPIView):
+    serializer_class = MisscallAnalyticsSerializers
+
+    def get_queryset(self):
+        campaign = self.kwargs['campaign_id']
+        return MisscallAnalytics.objects.filter(campaign=campaign)
