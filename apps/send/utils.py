@@ -9,6 +9,7 @@ push_service = FCMNotification(
     api_key=settings.FCM_API_KEY_SEND)
 
 
+# sends campaign payload to phone
 def send_sms_fcm(campaign, segment, fcm_registration_id):
     if segment == 0:
         data_message = {
@@ -32,13 +33,30 @@ def send_sms_fcm(campaign, segment, fcm_registration_id):
     return result
 
 
+# sends misscall payload to phone
 def send_misscall_info(campaign, fcm_reg_id):
     data_message = {
         'campaign': campaign.id,
         'sms_template': campaign.sms_template,
         'type': 'Misscall',
         'status': campaign.misscall_active
+    }
 
+    result = None
+
+    try:
+        result = push_service.single_device_data_message(
+            registration_id=fcm_reg_id,
+            data_message=data_message)
+
+    except InvalidDataError:
+        raise
+    return result
+
+
+def sync_data_message(fcm_reg_id):
+    data_message = {
+        'type': 'Sync'
     }
     result = None
 
@@ -46,11 +64,13 @@ def send_misscall_info(campaign, fcm_reg_id):
         result = push_service.single_device_data_message(
             registration_id=fcm_reg_id,
             data_message=data_message)
+
     except InvalidDataError:
         raise
     return result
 
 
+# performs search and returns response object
 def perform_search(query, lists):
     list_id = lists.id
     client = Elasticsearch()

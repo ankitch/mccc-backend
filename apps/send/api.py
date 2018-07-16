@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.send.schedules import schedule_sms
-from apps.send.utils import send_sms_fcm, send_misscall_info
+from apps.send.utils import send_sms_fcm, send_misscall_info, sync_data_message
 from apps.tanks.models import Campaign
 from apps.users.models import User
 
@@ -46,3 +46,11 @@ class PushDataMessage(APIView):
         send = send_misscall_info(campaign, fcm_reg_id)
         print(send)
         return Response(send)
+
+
+class SyncDataMessage(APIView):
+    def get(self, request, format=None):
+        fcm_reg_id = request.user.fcm_reg_id
+        sync = sync_data_message(fcm_reg_id)
+        print(sync)
+        return Response(sync)

@@ -28,8 +28,9 @@ class ClickEvent(models.Model):
 
 class SMSAnalytics(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
-    sent = ArrayField(models.CharField(max_length=10, null=True), blank=True)
-    delivered = ArrayField(models.CharField(max_length=10, null=True), blank=True)
+    sent = ArrayField(models.CharField(max_length=10, null=True), null=True,
+                      blank=True)
+    delivered = ArrayField(models.CharField(max_length=10, null=True), null=True, blank=True)
     timestamp = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
