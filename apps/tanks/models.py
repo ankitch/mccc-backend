@@ -1,7 +1,6 @@
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 
-from apps.send.utils import send_misscall_info
 from apps.url_shortner.models import ShortenedUrl
 from apps.users.models import Company
 
@@ -73,19 +72,12 @@ class Campaign(models.Model):
                     temp.save()
             except Campaign.DoesNotExist:
                 pass
+
+        # old = Campaign.objects.get(pk=self.id)
+        # if old:
+        #     if old.sms_template != self.sms_template:
+        #         print("changed")
         super(Campaign, self).save(*args, **kwargs)
-
-    def update(self, *args, **kwargs):
-        if self.misscall_active:
-            try:
-                temp = Campaign.objects.get(misscall_active=True)
-                if self != temp:
-                    temp.misscall_active = False
-                    temp.save()
-
-            except Campaign.DoesNotExist:
-                pass
-        super(Campaign, self).update(*args, **kwargs)
 
     def company_name(self):
         return self.company.name

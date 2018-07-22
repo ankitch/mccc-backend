@@ -96,6 +96,9 @@ class CampaignSerializer(serializers.ModelSerializer):
         elif obj.type == "Regular":
             return obj.list.name
 
+        elif obj.type == "Misscall":
+            return None
+
     def get_total_customer(self, obj):
         if obj.type == 'Bulk':
             if (obj.to_numbers is None):
