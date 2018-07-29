@@ -116,7 +116,10 @@ class CampaignSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This field is not required here.")
 
         if campaign_type == 'Regular':
-            raise serializers.ValidationError("This field is required here.")
+            if (data):
+                pass
+            else:
+                raise serializers.ValidationError("This field is required here.")
         return data
 
     def validate_to_numbers(self, data):
@@ -134,14 +137,20 @@ class CampaignSerializer(serializers.ModelSerializer):
         campaign_type = self.initial_data.get('type')
 
         if campaign_type == 'Regular':
-            raise serializers.ValidationError("This field is required here.")
+            if (data):
+                pass
+            else:
+                raise serializers.ValidationError("This field is required here.")
         return data
 
     def validate_details(self, data):
         campaign_type = self.initial_data.get('type')
 
         if campaign_type == 'Regular':
-            raise serializers.ValidationError("This field is required here.")
+            if(data):
+                pass
+            else:
+                raise serializers.ValidationError("This field is required here.")
         return data
 
     class Meta:
