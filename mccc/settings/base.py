@@ -17,7 +17,7 @@ INSTALLED_APPS = [
     'apps.tanks',
     'apps.url_shortner',
     'apps.analytics',
-
+    'apps.send',
 
     'rest_framework',
     'corsheaders',
@@ -119,20 +119,10 @@ Q_CLUSTER = {
     }
 }
 
-
 STATIC_URL = '/static/'
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")
 
 SHORTCODE_MAX = 15
 SHORTCODE_MIN = 4
-
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'localhost:9200'
-    },
-}
-ELASTICSEARCH_DSL_AUTO_REFRESH = True
-ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
-
 from .auth_settings import *
