@@ -7,7 +7,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 
 from apps.analytics.api import DashboardAnalytics, SMSAnalyticsViewSet, CampaignAnalytics, MisscallAnalyticsViewSet, \
     CampaignMisscallAnalytics
-from apps.send.api import SendSMS, ScheduleCampaign, PushDataMessage, SyncDataMessage
+from apps.send.api import SendSMS, ScheduleCampaign, PushDataMessage, SyncDataMessage, RepliesViewset, SendMessage
 from apps.tanks import api as tank_api
 from apps.tanks import views as tank_views
 from apps.tanks.api import GetMessage, AddSegment, CustomerDocumentView, CampaignListView
@@ -25,7 +25,8 @@ router.register('campaigns', tank_api.CampaignViewSet, base_name='campaign')
 router.register('segments', tank_api.SegmentViewSet, base_name='segment')
 router.register('shortenedurl', ShortenedUrlViewSet, base_name='shortenurl')
 router.register('sms/analytics', SMSAnalyticsViewSet, base_name='sms_analytics')
-router.register('miscall/analytics', MisscallAnalyticsViewSet, base_name='sms_analytics')
+router.register('miscall/analytics', MisscallAnalyticsViewSet, base_name='misscall_analytics')
+router.register('replies', RepliesViewset, base_name='replies')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,6 +50,7 @@ urlpatterns = [
     path('v1/send/sms/', SendSMS.as_view()),
 
     path('v1/push/misscall/', PushDataMessage.as_view()),
+    path('v1/push/sms/', SendMessage.as_view()),
     path('v1/sync/data/', SyncDataMessage.as_view()),
 
     path('v1/camp/analytics/<int:campaign_id>/', CampaignAnalytics.as_view()),

@@ -1,7 +1,10 @@
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.send.models import Replies
 from apps.send.schedules import schedule_sms
+from apps.send.serializers import RepliesSerializer
 from apps.send.utils import send_sms_fcm, send_misscall_info, sync_data_message
 from apps.tanks.models import Campaign
 from apps.users.models import User
@@ -54,3 +57,30 @@ class SyncDataMessage(APIView):
         sync = sync_data_message(fcm_reg_id)
         print(sync)
         return Response(sync)
+
+
+class CreateListMixin:
+    """Allows bulk creation of a resource."""
+
+    def get_serializer(self, *args, **kwargs):
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super().get_serializer(*args, **kwargs)
+
+
+class RepliesViewset(CreateListMixin, viewsets.ModelViewSet):
+    serializer_class = RepliesSerializer
+
+    def get_queryset(self):
+        company = self.request.company
+        return Replies.objects.filter(company_id=company)
+
+
+class SendMessage(APIView):
+    def post(self, request, format=None):
+        to_number = request.data['to_number']
+        message = request.data['message']
+
+
+        import ipdb
+        ipdb.set_trace()

@@ -70,6 +70,22 @@ def sync_data_message(fcm_reg_id):
     return result
 
 
+def send_replies(fcm_reg_id, data):
+    data_message = {
+        'to_number': data['number'],
+        'message': data['message']
+    }
+
+    result = None
+
+    try:
+        result = push_service.single_device_data_message(
+            registration_id=fcm_reg_id,
+            data_message=data_message        )
+    import ipdb
+    ipdb.set_trace()
+
+
 # performs search and returns response object
 def perform_search(query, lists):
     list_id = lists.id
